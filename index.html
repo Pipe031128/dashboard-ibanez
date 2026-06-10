@@ -743,13 +743,22 @@ window.onerror=function(msg,src,line,col,err){
   d.textContent='JS ERROR: '+msg+' \n('+src+' line '+line+':'+col+')\n'+(err&&err.stack?err.stack:'');
   document.body.appendChild(d);
 };
+var dbg=document.createElement('div');
+dbg.style='position:fixed;top:0;left:0;right:0;background:#1a1d27;color:#38c9a0;padding:10px;font-size:12px;z-index:9999;font-family:monospace;border-bottom:2px solid #4f6ef7';
+var cv=document.getElementById('cVBar');
+var cvRect=cv?cv.getBoundingClientRect():null;
+dbg.textContent='Chart='+typeof Chart
+  +' | canvas='+(cv?'OK':'NULL')
+  +' | canvasSize='+(cvRect?Math.round(cvRect.width)+'x'+Math.round(cvRect.height):'?')
+  +' | selMeses='+JSON.stringify(selMeses)
+  +' | ALL.orden='+JSON.stringify(ALL.orden);
+document.body.appendChild(dbg);
 try{
   buildPills();renderResumen();
+  dbg.textContent+=' | charts='+Object.keys(charts).join(',');
 }catch(e){
-  var d=document.createElement('div');
-  d.style='position:fixed;top:0;left:0;right:0;background:#e05d7a;color:#fff;padding:12px;font-size:13px;z-index:9999;font-family:monospace;white-space:pre-wrap';
-  d.textContent='ERROR en boot: '+e.message+'\n'+e.stack;
-  document.body.appendChild(d);
+  dbg.style.background='#e05d7a';
+  dbg.textContent+=' | ERROR: '+e.message+' '+e.stack;
 }
 </script>
 </body>
