@@ -736,29 +736,30 @@ function sortDrill(t,key,btn){
 }
 function filterDrill(t,val){drillFilters[t]=val;renderDrill(t);}
 
-// BOOT
-window.onerror=function(msg,src,line,col,err){
-  var d=document.createElement('div');
-  d.style='position:fixed;top:0;left:0;right:0;background:#e05d7a;color:#fff;padding:12px;font-size:13px;z-index:9999;font-family:monospace;white-space:pre-wrap';
-  d.textContent='JS ERROR: '+msg+' \n('+src+' line '+line+':'+col+')\n'+(err&&err.stack?err.stack:'');
-  document.body.appendChild(d);
-};
+// BOOT – debug bar (BOTTOM para no quedar bajo el header)
 var dbg=document.createElement('div');
-dbg.style='position:fixed;top:0;left:0;right:0;background:#1a1d27;color:#38c9a0;padding:10px;font-size:12px;z-index:9999;font-family:monospace;border-bottom:2px solid #4f6ef7';
-var cv=document.getElementById('cVBar');
-var cvRect=cv?cv.getBoundingClientRect():null;
-dbg.textContent='Chart='+typeof Chart
-  +' | canvas='+(cv?'OK':'NULL')
-  +' | canvasSize='+(cvRect?Math.round(cvRect.width)+'x'+Math.round(cvRect.height):'?')
-  +' | selMeses='+JSON.stringify(selMeses)
-  +' | ALL.orden='+JSON.stringify(ALL.orden);
+dbg.style='position:fixed;bottom:0;left:0;right:0;background:#1a1d27;color:#38c9a0;padding:10px;font-size:12px;z-index:99999;font-family:monospace;border-top:3px solid #4f6ef7';
+dbg.textContent='INICIANDO...';
 document.body.appendChild(dbg);
+window.onerror=function(msg,src,line,col,err){
+  dbg.style.background='#e05d7a';
+  dbg.textContent='JS ERROR: '+msg+' | (line '+line+':'+col+') | '+(err&&err.stack?err.stack:'');
+};
+try{
+  var cv=document.getElementById('cVBar');
+  var cvRect=cv?cv.getBoundingClientRect():null;
+  dbg.textContent='Chart='+typeof Chart
+    +' | canvas='+(cv?'OK':'NULL')
+    +' | canvasSize='+(cvRect?Math.round(cvRect.width)+'x'+Math.round(cvRect.height):'?')
+    +' | meses='+(typeof selMeses!=='undefined'?JSON.stringify(selMeses):'UNDEF')
+    +' | ALL='+(typeof ALL!=='undefined'?JSON.stringify(ALL.orden):'UNDEF');
+}catch(e){ dbg.textContent='ERROR ANTES DE BOOT: '+e; }
 try{
   buildPills();renderResumen();
-  dbg.textContent+=' | charts='+Object.keys(charts).join(',');
+  dbg.textContent+=' | CHARTS='+Object.keys(charts).join(',');
 }catch(e){
   dbg.style.background='#e05d7a';
-  dbg.textContent+=' | ERROR: '+e.message+' '+e.stack;
+  dbg.textContent+=' | ERROR EN BOOT: '+e.message+' '+e.stack;
 }
 </script>
 </body>
