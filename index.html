@@ -738,8 +738,14 @@ function sortDrill(t,key,btn){
 function filterDrill(t,val){drillFilters[t]=val;renderDrill(t);}
 
 // BOOT
-buildPills();
-renderResumen();
+try{
+  buildPills();
+  renderResumen();
+}catch(e){
+  document.getElementById('mbadge').textContent='ERROR: '+e.message;
+  document.getElementById('mbadge').style.cssText='background:#e05d7a;color:#fff;padding:5px 11px;border-radius:7px;font-size:11px;max-width:800px;white-space:pre-wrap';
+  console.error('BOOT ERROR',e);
+}
 </script>
 </body>
 </html>
