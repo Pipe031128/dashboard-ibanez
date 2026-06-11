@@ -435,7 +435,7 @@ function renderResumen(){
 
 function buildRPdvNav(){
   document.getElementById('rPdvNav').innerHTML=PDV_ORDER.map((co,i)=>
-    '<button class="pb'+(curRPdv===co?' active':'')+'" onclick="selRPdv(''+co+'')">'+
+    '<button class="pb'+(curRPdv===co?' active':'')+'" data-co="'+co+'" onclick="selRPdv(this.dataset.co)">'+
     '<span style="color:'+COLORS[i]+';margin-right:3px">●</span>'+PDV_NAMES[co]+'</button>').join('');
 }
 function selRPdv(co){curRPdv=co;buildRPdvNav();renderRDaily();}
@@ -517,7 +517,7 @@ function renderVentas(){
 }
 function buildVPdvNav(){
   document.getElementById('vPdvNav').innerHTML=PDV_ORDER.map((co,i)=>
-    '<button class="pb'+(curVPdv===co?' active':'')+'" onclick="selVPdv(''+co+'')">'+
+    '<button class="pb'+(curVPdv===co?' active':'')+'" data-co="'+co+'" onclick="selVPdv(this.dataset.co)">'+
     '<span style="color:'+COLORS[i]+';margin-right:3px">●</span>'+PDV_NAMES[co]+'</button>').join('');
 }
 function selVPdv(co){curVPdv=co;buildVPdvNav();renderVDaily();}
