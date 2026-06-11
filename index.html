@@ -316,7 +316,7 @@ function buildPills(){
     const isOn=selMeses.includes(m);
     return '<div class="mpill'+(isOn?' active':'')+'" data-mes="'+m+'" '+
       (isOn?'style="background:'+col+';border-color:'+col+'"':'')+
-      ' onclick="toggleMes(''+m+'')">'+ALL.labels[m]+'</div>';
+      ' onclick="toggleMes(this.dataset.mes)">'+ALL.labels[m]+'</div>';
   }).join('');
   const n=selMeses.length;
   const labs=selMeses.map(m=>ALL.labels[m].split(' ')[0]);
