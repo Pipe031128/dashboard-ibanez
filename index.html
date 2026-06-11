@@ -739,14 +739,19 @@ function sortDrill(t,key,btn){
 function filterDrill(t,val){drillFilters[t]=val;renderDrill(t);}
 
 // BOOT
-try{
-  buildPills();
-  renderResumen();
-}catch(e){
-  document.getElementById('mbadge').textContent='ERROR: '+e.message;
-  document.getElementById('mbadge').style.cssText='background:#e05d7a;color:#fff;padding:5px 11px;border-radius:7px;font-size:11px;max-width:800px;white-space:pre-wrap';
-  console.error('BOOT ERROR',e);
-}
+(function(){
+  var badge=document.getElementById('mbadge');
+  function showErr(msg){
+    badge.textContent=msg;
+    badge.style.cssText='background:#e05d7a;color:#fff;padding:5px 14px;border-radius:7px;font-size:11px;max-width:900px;white-space:pre-wrap;word-break:break-all';
+  }
+  window.onerror=function(msg,src,line,col,err){
+    showErr('JS ERROR linea '+line+': '+msg+(err?' | '+err.stack:''));
+    return true;
+  };
+  try{ buildPills(); }catch(e){ showErr('ERROR en buildPills: '+e.message+' | '+e.stack); return; }
+  try{ renderResumen(); }catch(e){ showErr('ERROR en renderResumen: '+e.message+' | '+e.stack); }
+})();
 </script>
 </body>
 </html>
