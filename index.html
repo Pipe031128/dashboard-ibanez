@@ -25,7 +25,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-
 .badge{margin-left:auto;font-size:11px;color:var(--tx2);background:var(--sf2);
   padding:5px 12px;border-radius:7px;border:1px solid var(--bd)}
 .main{padding:20px 26px;display:flex;flex-direction:column;gap:20px}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .kpi{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px 20px}
 .kpi-label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--tx2);font-weight:600;margin-bottom:8px}
 .kpi-val{font-size:28px;font-weight:700;letter-spacing:-1px}
@@ -75,9 +75,14 @@ tr:hover td{background:var(--sf2)}
       <div class="kpi-sub" id="ks26">—</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Crecimiento</div>
+      <div class="kpi-label">Crecimiento Nominal</div>
       <div class="kpi-val" id="kvar">—</div>
-      <div class="kpi-sub" id="kvsub">vs mismo mes año anterior</div>
+      <div class="kpi-sub">Incluyendo inflación</div>
+    </div>
+    <div class="kpi" style="border-color:var(--ac)40">
+      <div class="kpi-label" style="color:var(--ac)">⚡ Crecimiento Real</div>
+      <div class="kpi-val" id="kvreal">—</div>
+      <div class="kpi-sub" id="kipc">Descontando IPC</div>
     </div>
   </div>
   <div class="row2">
@@ -96,7 +101,7 @@ tr:hover td{background:var(--sf2)}
       <thead><tr>
         <th>PDV</th>
         <th>2025</th><th>2026</th>
-        <th>Variación $</th><th>Variación %</th>
+        <th>Var. nominal</th><th>⚡ Var. real</th>
         <th>Margen 2025</th><th>Margen 2026</th>
         <th>Visual</th>
       </tr></thead>
@@ -105,7 +110,7 @@ tr:hover td{background:var(--sf2)}
   </div>
 </div>
 
-<script id="joyData" type="application/json">{"Abril":{"t25":4852895485,"t26":5604019512,"var_pct":15.5,"pdvs":[{"pdv":"Ortiz","v25":1193501274,"v26":1458719868,"mg25":26.3,"mg26":20.7,"var_abs":265218594,"var_pct":22.2},{"pdv":"Carepa","v25":827744042,"v26":917627848,"mg25":22.6,"mg26":19.5,"var_abs":89883806,"var_pct":10.9},{"pdv":"Chigorodo","v25":735853713,"v26":855046784,"mg25":23.7,"mg26":20.0,"var_abs":119193071,"var_pct":16.2},{"pdv":"Lopez","v25":580904044,"v26":675880458,"mg25":22.2,"mg26":19.4,"var_abs":94976414,"var_pct":16.3},{"pdv":"Terminal","v25":492650736,"v26":515736522,"mg25":21.5,"mg26":19.3,"var_abs":23085786,"var_pct":4.7},{"pdv":"Obrero","v25":398573358,"v26":458747462,"mg25":22.2,"mg26":20.0,"var_abs":60174104,"var_pct":15.1},{"pdv":"Turbo","v25":346060687,"v26":438703162,"mg25":23.0,"mg26":19.7,"var_abs":92642475,"var_pct":26.8},{"pdv":"Nueva Colonia","v25":277607631,"v26":283557408,"mg25":21.3,"mg26":20.6,"var_abs":5949777,"var_pct":2.1}]},"Mayo":{"t25":5420722988,"t26":6113187920,"var_pct":12.8,"pdvs":[{"pdv":"Ortiz","v25":1396504816,"v26":1598085077,"mg25":27.2,"mg26":21.2,"var_abs":201580261,"var_pct":14.4},{"pdv":"Carepa","v25":984627779,"v26":1027835779,"mg25":23.6,"mg26":19.1,"var_abs":43208000,"var_pct":4.4},{"pdv":"Chigorodo","v25":803601970,"v26":918599250,"mg25":24.3,"mg26":20.2,"var_abs":114997280,"var_pct":14.3},{"pdv":"Lopez","v25":622314718,"v26":748684031,"mg25":22.3,"mg26":19.5,"var_abs":126369313,"var_pct":20.3},{"pdv":"Terminal","v25":532846734,"v26":576054290,"mg25":21.5,"mg26":19.2,"var_abs":43207556,"var_pct":8.1},{"pdv":"Obrero","v25":416216500,"v26":486590932,"mg25":22.4,"mg26":19.7,"var_abs":70374432,"var_pct":16.9},{"pdv":"Turbo","v25":384531441,"v26":461283775,"mg25":22.7,"mg26":19.5,"var_abs":76752334,"var_pct":20.0},{"pdv":"Nueva Colonia","v25":280079030,"v26":296054786,"mg25":21.2,"mg26":20.8,"var_abs":15975756,"var_pct":5.7}]},"Junio":{"t25":5230795324,"t26":5393524198,"var_pct":3.1,"pdvs":[{"pdv":"Ortiz","v25":1320505969,"v26":1408806023,"mg25":26.8,"mg26":20.6,"var_abs":88300054,"var_pct":6.7},{"pdv":"Carepa","v25":923272542,"v26":885451192,"mg25":23.1,"mg26":19.0,"var_abs":-37821350,"var_pct":-4.1},{"pdv":"Chigorodo","v25":799099412,"v26":843089945,"mg25":23.8,"mg26":20.4,"var_abs":43990533,"var_pct":5.5},{"pdv":"Lopez","v25":611276703,"v26":652424886,"mg25":22.1,"mg26":19.0,"var_abs":41148183,"var_pct":6.7},{"pdv":"Terminal","v25":532391517,"v26":532509409,"mg25":21.3,"mg26":19.1,"var_abs":117892,"var_pct":0.0},{"pdv":"Obrero","v25":401396700,"v26":425347955,"mg25":22.5,"mg26":19.4,"var_abs":23951255,"var_pct":6.0},{"pdv":"Turbo","v25":361468516,"v26":386421796,"mg25":22.3,"mg26":19.4,"var_abs":24953280,"var_pct":6.9},{"pdv":"Nueva Colonia","v25":281383965,"v26":259472992,"mg25":20.2,"mg26":20.7,"var_abs":-21910973,"var_pct":-7.8}]}}</script>
+<script id="joyData" type="application/json">{"Abril":{"t25":4852895485,"t26":5604019512,"var_pct":15.5,"var_real":9.3,"ipc":5.68,"pdvs":[{"pdv":"Ortiz","v25":1193501274,"v26":1458719868,"mg25":26.3,"mg26":20.7,"var_abs":265218594,"var_pct":22.2,"var_real":15.7},{"pdv":"Carepa","v25":827744042,"v26":917627848,"mg25":22.6,"mg26":19.5,"var_abs":89883806,"var_pct":10.9,"var_real":4.9},{"pdv":"Chigorodo","v25":735853713,"v26":855046784,"mg25":23.7,"mg26":20.0,"var_abs":119193071,"var_pct":16.2,"var_real":10.0},{"pdv":"Lopez","v25":580904044,"v26":675880458,"mg25":22.2,"mg26":19.4,"var_abs":94976414,"var_pct":16.3,"var_real":10.1},{"pdv":"Terminal","v25":492650736,"v26":515736522,"mg25":21.5,"mg26":19.3,"var_abs":23085786,"var_pct":4.7,"var_real":-0.9},{"pdv":"Obrero","v25":398573358,"v26":458747462,"mg25":22.2,"mg26":20.0,"var_abs":60174104,"var_pct":15.1,"var_real":8.9},{"pdv":"Turbo","v25":346060687,"v26":438703162,"mg25":23.0,"mg26":19.7,"var_abs":92642475,"var_pct":26.8,"var_real":20.0},{"pdv":"Nueva Colonia","v25":277607631,"v26":283557408,"mg25":21.3,"mg26":20.6,"var_abs":5949777,"var_pct":2.1,"var_real":-3.3}]},"Mayo":{"t25":5420722988,"t26":6113187920,"var_pct":12.8,"var_real":6.6,"ipc":5.84,"pdvs":[{"pdv":"Ortiz","v25":1396504816,"v26":1598085077,"mg25":27.2,"mg26":21.2,"var_abs":201580261,"var_pct":14.4,"var_real":8.1},{"pdv":"Carepa","v25":984627779,"v26":1027835779,"mg25":23.6,"mg26":19.1,"var_abs":43208000,"var_pct":4.4,"var_real":-1.4},{"pdv":"Chigorodo","v25":803601970,"v26":918599250,"mg25":24.3,"mg26":20.2,"var_abs":114997280,"var_pct":14.3,"var_real":8.0},{"pdv":"Lopez","v25":622314718,"v26":748684031,"mg25":22.3,"mg26":19.5,"var_abs":126369313,"var_pct":20.3,"var_real":13.7},{"pdv":"Terminal","v25":532846734,"v26":576054290,"mg25":21.5,"mg26":19.2,"var_abs":43207556,"var_pct":8.1,"var_real":2.1},{"pdv":"Obrero","v25":416216500,"v26":486590932,"mg25":22.4,"mg26":19.7,"var_abs":70374432,"var_pct":16.9,"var_real":10.5},{"pdv":"Turbo","v25":384531441,"v26":461283775,"mg25":22.7,"mg26":19.5,"var_abs":76752334,"var_pct":20.0,"var_real":13.3},{"pdv":"Nueva Colonia","v25":280079030,"v26":296054786,"mg25":21.2,"mg26":20.8,"var_abs":15975756,"var_pct":5.7,"var_real":-0.1}]},"Junio":{"t25":5230795324,"t26":5393524198,"var_pct":3.1,"var_real":-2.6,"ipc":5.84,"pdvs":[{"pdv":"Ortiz","v25":1320505969,"v26":1408806023,"mg25":26.8,"mg26":20.6,"var_abs":88300054,"var_pct":6.7,"var_real":0.8},{"pdv":"Carepa","v25":923272542,"v26":885451192,"mg25":23.1,"mg26":19.0,"var_abs":-37821350,"var_pct":-4.1,"var_real":-9.4},{"pdv":"Chigorodo","v25":799099412,"v26":843089945,"mg25":23.8,"mg26":20.4,"var_abs":43990533,"var_pct":5.5,"var_real":-0.3},{"pdv":"Lopez","v25":611276703,"v26":652424886,"mg25":22.1,"mg26":19.0,"var_abs":41148183,"var_pct":6.7,"var_real":0.8},{"pdv":"Terminal","v25":532391517,"v26":532509409,"mg25":21.3,"mg26":19.1,"var_abs":117892,"var_pct":0.0,"var_real":-5.5},{"pdv":"Obrero","v25":401396700,"v26":425347955,"mg25":22.5,"mg26":19.4,"var_abs":23951255,"var_pct":6.0,"var_real":0.1},{"pdv":"Turbo","v25":361468516,"v26":386421796,"mg25":22.3,"mg26":19.4,"var_abs":24953280,"var_pct":6.9,"var_real":1.0},{"pdv":"Nueva Colonia","v25":281383965,"v26":259472992,"mg25":20.2,"mg26":20.7,"var_abs":-21910973,"var_pct":-7.8,"var_real":-12.9}]}}</script>
 <script>
 const DATA = JSON.parse(document.getElementById('joyData').textContent);
 const MESES = ["Abril", "Mayo", "Junio"];
@@ -145,6 +150,11 @@ function render(){
   const varEl = document.getElementById('kvar');
   varEl.textContent = (vp>=0?'+':'')+vp.toFixed(1)+'%';
   varEl.className = 'kpi-val '+(vp>0?'var-up':vp<0?'var-dn':'var-ne');
+  const vr = d.var_real;
+  const realEl = document.getElementById('kvreal');
+  realEl.textContent = (vr>=0?'+':'')+vr.toFixed(1)+'%';
+  realEl.className = 'kpi-val '+(vr>0?'var-up':vr<0?'var-dn':'var-ne');
+  document.getElementById('kipc').textContent = 'IPC '+selMes+' 2026: '+d.ipc.toFixed(2)+'%';
 
   const labels = d.pdvs.map(p=>p.pdv);
   const v25 = d.pdvs.map(p=>p.v25);
@@ -194,6 +204,7 @@ function render(){
       <td>${fmt(p.v26)}</td>
       <td style="color:${p.var_abs>=0?'#38c9a0':'#e05d7a'}">${varAbs}</td>
       <td>${pctPill(p.var_pct)}</td>
+      <td>${pctPill(p.var_real)}</td>
       <td style="color:#8b90b0">${p.mg25.toFixed(1)}%</td>
       <td style="color:${p.mg26>=p.mg25?'#38c9a0':'#e05d7a'}">${p.mg26.toFixed(1)}%</td>
       <td style="min-width:120px">
