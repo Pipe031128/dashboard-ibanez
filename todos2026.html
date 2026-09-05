@@ -1010,7 +1010,7 @@ function renderIAll(){
   const meta=ID._meta||{};
   const selCo=document.getElementById('iPdvSel').value;
   // Actualizar KPIs según PDV seleccionado
-  const {pdvStats,totVal,totDias,totRot}=calcInvVal(curMes);
+  const {pdvStats,totVal,totDias,totRot,totVentas,totCogs,totCompras,totNomina}=calcInvVal(curMes);
   const prevMes=MESES[MESES.indexOf(curMes)-1];
   const prevID=prevMes?ALLMONTHS[prevMes]?.inventario:null;
   if(selCo==='all'){
@@ -1106,7 +1106,6 @@ function renderIAll(){
   });
 
   // Tabla maestra: Inventario × Ventas × Compras × Nómina
-  const {pdvStats,totVal,totDias,totRot,totVentas,totCogs,totCompras,totNomina}=calcInvVal(curMes);
   const statsSorted=[...pdvStats].sort((a,b)=>b.val-a.val);
   const totPctNom=totVentas>0?(totNomina/totVentas*100):0;
   document.getElementById('iValTable').innerHTML=`
@@ -1162,7 +1161,7 @@ function renderInvTable(items){
         <td><strong>${it.name}</strong></td>
         <td style="color:var(--text2);font-size:11px">${it.um}</td>
         <td style="font-variant-numeric:tabular-nums">${Math.round(it.unidades).toLocaleString('es-CO')}</td>
-        <td style="color:var(--text2);font-size:11px">${(it.costo||0).toLocaleString('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0})}</td>
+        <td style="color:var(--text2);font-size:11px">${(it.costo_unit||0).toLocaleString('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0})}</td>
         <td style="font-weight:700">${fmtFull(it.valor||0)}</td>
         <td><div style="display:flex;align-items:center;gap:4px">
           <div class="bar-t" style="width:60px"><div class="bar-f" style="width:${Math.min(pct*10,100)}%;background:${col}"></div></div>
