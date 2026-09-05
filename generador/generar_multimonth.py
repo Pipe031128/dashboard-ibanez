@@ -74,7 +74,7 @@ def parse_inventario(txt_path):
             'total_unidades': total_u,
             'top_items': top,
             'all_items': [{'ref': k, 'name': v['name'], 'unidades': v['unidades'], 'um': v['um']}
-                          for k, v in sorted_items],
+                          for k, v in sorted_items[:200]],
         }
         for ref, v in items.items():
             if ref not in global_items:
@@ -1118,7 +1118,7 @@ function initIKpis(){{
   const topPdv=pdvsData.reduce((a,b)=>(ID[a]?.total_unidades||0)>(ID[b]?.total_unidades||0)?a:b,pdvsData[0]||'001');
   const prevMes=MESES[MESES.indexOf(curMes)-1];
   const prevID=prevMes?ALLMONTHS[prevMes]?.inventario:null;
-  const prevU=prevID?.(prevID._meta?.total_unidades||0):0;
+  const prevU=prevID?(prevID._meta?.total_unidades||0):0;
   const varU=prevU>0?((totalU-prevU)/prevU*100):null;
   const varStr=varU!==null?(varU>=0?`▲ ${{varU.toFixed(1)}}%`:`▼ ${{Math.abs(varU).toFixed(1)}}%`):'—';
   const varCol=varU===null?'var(--text2)':varU>=0?'var(--green)':'var(--red)';
