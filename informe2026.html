@@ -147,7 +147,7 @@ body.mobile-mode .mobile-nav{display:flex!important;}
 .mobile-nav-btn{flex:1;min-width:52px;padding:5px 4px;border:none;background:none;color:#8b93b8;font-size:9px;font-weight:600;cursor:pointer;border-radius:7px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .12s;}
 .mobile-nav-btn .mn-icon{font-size:18px;}
 .mobile-nav-btn.active,.mobile-nav-btn:hover{color:#5b6ef5;}
-body.mobile-mode .main{padding-bottom:72px;}
+body.mobile-mode .main{padding-bottom:72px;padding-top:46px;}
 </style>
 
 <div id="splash">
@@ -171,6 +171,15 @@ body.mobile-mode .main{padding-bottom:72px;}
   </div>
 </div>
 
+<!-- TOGGLE MÓVIL CON/SIN (solo visible en mobile-mode) -->
+<div id="mob-toggle" style="display:none;position:fixed;top:0;left:0;right:0;z-index:200;background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 12px;align-items:center;justify-content:space-between;gap:8px;">
+  <span style="font-size:11px;font-weight:700;color:var(--fg2);">🛒 Los Ibáñez 2026</span>
+  <div style="display:flex;background:var(--bg3);border-radius:7px;padding:2px;gap:2px;">
+    <button class="tog-btn active" id="mob-tog-con" style="font-size:11px;padding:4px 10px;" onclick="setMode('con')">Con Cárn.</button>
+    <button class="tog-btn" id="mob-tog-sin" style="font-size:11px;padding:4px 10px;" onclick="setMode('sin')">Sin Cárn.</button>
+  </div>
+</div>
+
 <!-- MOBILE BOTTOM NAV -->
 <nav class="mobile-nav" id="mob-nav">
   <button class="mobile-nav-btn active" onclick="nav('resumen',this)"><span class="mn-icon">📊</span>Resumen</button>
@@ -178,6 +187,7 @@ body.mobile-mode .main{padding-bottom:72px;}
   <button class="mobile-nav-btn" onclick="nav('compras',this)"><span class="mn-icon">🛒</span>Compras</button>
   <button class="mobile-nav-btn" onclick="nav('nomina',this)"><span class="mn-icon">👥</span>Nómina</button>
   <button class="mobile-nav-btn" onclick="nav('inventario',this)"><span class="mn-icon">📦</span>Inv.</button>
+  <button class="mobile-nav-btn" onclick="nav('pdv',this)"><span class="mn-icon">🏪</span>PDV</button>
   <button class="mobile-nav-btn" onclick="nav('comparar',this)"><span class="mn-icon">⚖️</span>Comparar</button>
   <button class="mobile-nav-btn" onclick="nav('alertas',this)"><span class="mn-icon">🚨</span>Alertas</button>
 </nav>
@@ -456,9 +466,11 @@ const dc    = id => {if(charts[id]){charts[id].destroy();delete charts[id];}};
 // ── TOGGLE MODE ───────────────────────────────────────────────────
 function setMode(m){
   mode=m;
-  document.getElementById('tog-con').classList.toggle('active',m==='con');
-  document.getElementById('tog-sin').classList.toggle('active',m==='sin');
-  // Re-render active section
+  // Sincronizar todos los botones de toggle (sidebar + móvil)
+  ['tog-con','tog-sin','mob-tog-con','mob-tog-sin'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('active', id.endsWith(m==='con'?'-con':'-sin'));
+  });
   const active=document.querySelector('.section.active')?.id.replace('sec-','');
   if(active) rerender(active);
 }
@@ -964,6 +976,7 @@ function chooseDev(dev){
     if(dev==='mobile'){
       document.body.classList.add('mobile-mode');
       document.getElementById('mob-nav').style.display='flex';
+      document.getElementById('mob-toggle').style.display='flex';
     }
     buildTabs('v-tabs','Septiembre',"renderVentas");
     buildTabs('c-tabs','Septiembre',"renderCompras");
