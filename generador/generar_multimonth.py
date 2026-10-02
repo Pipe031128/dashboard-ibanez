@@ -18,7 +18,7 @@ INVENTARIO_DIR= BASE / 'Inventario'   / '2026'
 LINEA_DIR     = BASE / 'Linea Items'
 OUTPUT_DIR    = BASE / 'Dashboards'
 
-MESES = ['Abril', 'Mayo', 'Junio', 'Julio', 'Agosto']
+MESES = ['Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre']
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s  %(levelname)s  %(message)s',
@@ -28,67 +28,81 @@ log = logging.getLogger(__name__)
 
 def parse_inventario(txt_path):
     """
-    Columnas: Referencia | Desc.item | Bodega | Ubicación | Lote | U.M. | Existencia
-    Devuelve dict por PDV con top_items, total_skus, total_unidades,
-    y _meta con top_items_global y evolucion (para comparativo).
+    Columnas reales (tab-delimited):
+    [0]Referencia [1]Bodega [2]Desc.item [3]Ubicación [4]Lote [5]U.M.
+    [6]Existencia [7]C.O.bodega(PDV) [8]Costo prom. tot.
     """
-    import csv, re
+    import csv
     PDV_NAMES = gd.PDV_NAMES
 
-    pdv_items = {}   # {co: {ref: {name, unidades, um}}}
+    pdv_items = {}   # {co: {ref: {name, unidades, um, costo}}}
 
     def parse_num(s):
-        s = s.strip().replace('.', '').replace(',', '.')
+        s = s.strip().replace('$', '').replace('.', '').replace(',', '.')
         try: return float(s)
         except: return 0.0
 
     with open(txt_path, encoding='utf-8', errors='replace') as f:
         reader = csv.reader(f, delimiter='\t')
-        header = next(reader, None)
+        next(reader, None)  # skip header
         for row in reader:
-            if len(row) < 7: continue
+            if len(row) < 9: continue
             ref   = row[0].strip()
-            name  = row[1].strip()
-            co    = row[2].strip().lstrip('0') or '0'
+            name  = row[2].strip()
+            co    = row[7].strip().lstrip('0') or '0'
             co    = co.zfill(3)
             um    = row[5].strip()
             exist = parse_num(row[6])
+            # col[8] = "Costo prom. tot. (ins)" = VALOR TOTAL del ítem en la instalación
+            valor = parse_num(row[8])
             if not ref or exist == 0: continue
             if co not in pdv_items:
                 pdv_items[co] = {}
             if ref not in pdv_items[co]:
-                pdv_items[co][ref] = {'name': name, 'unidades': 0.0, 'um': um}
+                pdv_items[co][ref] = {'name': name, 'unidades': 0.0, 'valor': 0.0, 'um': um}
             pdv_items[co][ref]['unidades'] += exist
+            pdv_items[co][ref]['valor']    += valor  # sumar valor total
 
     result = {}
     global_items = {}
 
     for co, items in pdv_items.items():
-        sorted_items = sorted(items.items(), key=lambda x: -x[1]['unidades'])
-        total_u = sum(v['unidades'] for v in items.values())
-        top = [{'ref': k, 'name': v['name'], 'unidades': v['unidades'], 'um': v['um']}
-               for k, v in sorted_items[:20]]
+        sorted_items = sorted(items.items(), key=lambda x: -x[1]['valor'])
+        total_u   = sum(v['unidades'] for v in items.values())
+        total_val = sum(v['valor']    for v in items.values())
+        def make_item(k, v):
+            u = v['unidades'] or 1
+            return {'ref': k, 'name': v['name'], 'unidades': v['unidades'],
+                    'um': v['um'], 'valor': v['valor'],
+                    'costo_unit': round(v['valor'] / u, 2)}
+        top = [make_item(k, v) for k, v in sorted_items[:20]]
         result[co] = {
             'name': PDV_NAMES.get(co, co),
             'total_skus': len(items),
             'total_unidades': total_u,
+            'total_valor': total_val,
             'top_items': top,
-            'all_items': [{'ref': k, 'name': v['name'], 'unidades': v['unidades'], 'um': v['um']}
-                          for k, v in sorted_items[:200]],
+            'all_items': [make_item(k, v) for k, v in sorted_items[:200]],
         }
         for ref, v in items.items():
             if ref not in global_items:
-                global_items[ref] = {'name': v['name'], 'unidades': 0.0, 'um': v['um']}
+                global_items[ref] = {'name': v['name'], 'unidades': 0.0, 'valor': 0.0, 'um': v['um']}
             global_items[ref]['unidades'] += v['unidades']
+            global_items[ref]['valor']    += v['valor']
 
-    top_global = sorted(global_items.items(), key=lambda x: -x[1]['unidades'])[:20]
+    top_global = sorted(global_items.items(), key=lambda x: -x[1]['valor'])[:20]
+    total_val_global = sum(v['valor'] for v in global_items.values())
     result['_meta'] = {
-        'top_items_global': [{'ref': k, 'name': v['name'], 'unidades': v['unidades']} for k, v in top_global],
+        'top_items_global': [{'ref': k, 'name': v['name'], 'unidades': v['unidades'],
+                              'valor': v['valor']} for k, v in top_global],
         'total_skus': len(global_items),
         'total_unidades': sum(v['unidades'] for v in global_items.values()),
+        'total_valor': total_val_global,
         'pdvs_con_datos': list(pdv_items.keys()),
     }
-    log.info(f"  Inventario: {len(global_items)} SKUs únicos | {sum(v['unidades'] for v in global_items.values()):.0f} unidades totales")
+    log.info(f"  Inventario: {len(global_items)} SKUs | "
+             f"{sum(v['unidades'] for v in global_items.values()):.0f} uds | "
+             f"${total_val_global/1e6:.0f}M valorización")
     return result
 
 
@@ -439,62 +453,52 @@ body{{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sa
 <div id="tab-inventario" class="tab-content">
 <div class="main">
   <div id="iKpiRow" class="kpi-row kpi-row-4"></div>
-  <div class="pdv-nav" id="iNav"></div>
-  <div id="iBread" class="breadcrumb" style="display:none"></div>
 
-  <!-- Vista todos los PDV -->
-  <div id="iAll">
-    <div class="row r2">
-      <div class="card">
-        <div class="card-title">📊 Unidades por PDV</div>
-        <div class="chart-wrap h250"><canvas id="iBarAll"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">🥧 Participación en Inventario</div>
-        <div class="chart-wrap h250"><canvas id="iDonut"></canvas></div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:15px">
-      <div class="card-title">📈 Evolución del Inventario Total (Unidades)
-        <span style="margin-left:auto;font-size:10px;color:var(--text2);font-weight:400;text-transform:none">Inventario final de cada mes</span>
-      </div>
-      <div class="chart-wrap h250"><canvas id="iLineEvo"></canvas></div>
-    </div>
-    <div class="row r2">
-      <div class="card">
-        <div class="card-title">🏆 Top 15 Ítems por Existencia (Global)</div>
-        <div class="chart-wrap h280"><canvas id="iTopGlobal"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">📋 Resumen por PDV</div>
-        <div style="overflow-x:auto"><table class="tbl" id="iOvTable"></table></div>
-      </div>
-    </div>
+  <!-- Filtros -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;flex-wrap:wrap">
+    <label style="font-size:12px;color:var(--text2)">PDV:</label>
+    <select id="iPdvSel" onchange="renderIAll()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;cursor:pointer">
+      <option value="all">🏪 Todos los PDV</option>
+    </select>
+    <input id="iSearch" type="text" placeholder="🔍 Buscar producto..." oninput="filterInv()"
+      style="padding:5px 12px;border-radius:8px;border:1px solid var(--border);
+      background:var(--surface2);color:var(--text);font-size:12px;width:220px;margin-left:auto">
   </div>
 
-  <!-- Vista PDV individual -->
-  <div id="iPdv" style="display:none">
-    <div class="row r2">
-      <div class="card">
-        <div class="card-title">📊 Top 15 Ítems del PDV</div>
-        <div class="chart-wrap h280"><canvas id="iBarPdv"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">📈 Evolución Inventario del PDV (Meses)</div>
-        <div class="chart-wrap h280"><canvas id="iLinePdv"></canvas></div>
-      </div>
+  <!-- Tabla valorización por PDV -->
+  <div class="card" style="margin-bottom:15px">
+    <div class="card-title">💰 Valorización por PDV
+      <span style="margin-left:auto;font-size:10px;color:var(--text2);font-weight:400;text-transform:none">Costo promedio estimado</span>
     </div>
-    <div class="card">
-      <div class="card-title">📋 Todos los Ítems del PDV
-        <input id="iSearch" type="text" placeholder="Buscar ítem..." oninput="filterInv()"
-          style="margin-left:auto;padding:4px 10px;border-radius:6px;border:1px solid var(--border);
-          background:var(--surface2);color:var(--text);font-size:12px;width:200px">
-      </div>
-      <div style="overflow-x:auto;max-height:420px;overflow-y:auto">
-        <table class="tbl" id="iAllTable"></table>
-      </div>
+    <div style="overflow-x:auto"><table class="tbl" id="iValTable"></table></div>
+  </div>
+
+  <!-- Top 20 chart -->
+  <div class="card" style="margin-bottom:15px">
+    <div class="card-title">🏆 Top 20 Productos por Existencia
+      <span id="iChartSub" style="margin-left:auto;font-size:10px;color:var(--text2);font-weight:400;text-transform:none"></span>
+    </div>
+    <div class="chart-wrap" style="height:380px"><canvas id="iTopChart"></canvas></div>
+  </div>
+
+  <!-- Evolución -->
+  <div class="card" style="margin-bottom:15px">
+    <div class="card-title">📈 Evolución del Inventario (Unidades por Mes)
+      <span style="margin-left:auto;font-size:10px;color:var(--text2);font-weight:400;text-transform:none">Inventario final de cada mes</span>
+    </div>
+    <div class="chart-wrap h250"><canvas id="iLineEvo"></canvas></div>
+  </div>
+
+  <!-- Tabla completa -->
+  <div class="card">
+    <div class="card-title">📋 Detalle de Inventario
+      <span id="iTableCount" style="margin-left:auto;font-size:10px;color:var(--text2);font-weight:400;text-transform:none"></span>
+    </div>
+    <div style="overflow-x:auto;max-height:480px;overflow-y:auto">
+      <table class="tbl" id="iAllTable"></table>
     </div>
   </div>
+</div>
 </div>
 </div>
 
@@ -1109,83 +1113,152 @@ function initProductividad(){{
 // ══════════ INVENTARIO ══════════
 let curIPdv='all', invAllItems=[];
 
+function gd_pdv_idx(co){{return PDV_ORDER.indexOf(co);}}
+
+function calcInvVal(mes){{
+  const ID=ALLMONTHS[mes]?.inventario||{{}};
+  const meta=ID._meta||{{}};
+  const VDm=ALLMONTHS[mes]?.ventas||{{}};
+  const CDm=ALLMONTHS[mes]?.compras||{{}};
+  const NDm=ALLMONTHS[mes]?.nomina||{{}};
+  const pdvs=(meta.pdvs_con_datos||[]).filter(co=>PDV_ORDER.includes(co));
+  const days=VDm[PDV_ORDER[0]]?.daily?.length||30;
+  const pdvStats=pdvs.map(co=>{{
+    const inv=ID[co]||{{}};
+    const val=inv.total_valor||0;          // valorización real (costo × unidades)
+    const units=inv.total_unidades||0;
+    const ventas=VDm[co]?.total||0;
+    const mg=VDm[co]?.avg_margin||0;
+    const cogs=ventas*(1-mg/100);
+    const dailyCogs=cogs/days;
+    const dias=dailyCogs>0?Math.round(val/dailyCogs):0;
+    const rot=dias>0?parseFloat((365/dias).toFixed(2)):0;
+    const compras=CDm[co]?.total||0;
+    const nomina=NDm[co]?.total_devengo||0;
+    const pctNom=ventas>0?(nomina/ventas*100):0;
+    return{{co,name:inv.name||ID[co]?.name||co,units,val,dias,rot,ventas,cogs,compras,nomina,pctNom}};
+  }});
+  const totVal=pdvStats.reduce((s,p)=>s+p.val,0);
+  const totVentas=pdvStats.reduce((s,p)=>s+p.ventas,0);
+  const totCogs=pdvStats.reduce((s,p)=>s+p.cogs,0);
+  const totCompras=pdvStats.reduce((s,p)=>s+p.compras,0);
+  const totNomina=pdvStats.reduce((s,p)=>s+p.nomina,0);
+  const totDailyCogs=totCogs/days;
+  const totDias=totDailyCogs>0?Math.round(totVal/totDailyCogs):0;
+  const totRot=totDias>0?parseFloat((365/totDias).toFixed(2)):0;
+  return{{pdvStats,totVal,totDias,totRot,totVentas,totCogs,totCompras,totNomina}};
+}}
+
 function initIKpis(){{
   const ID=ALLMONTHS[curMes].inventario||{{}};
   const meta=ID._meta||{{}};
-  const pdvsData=Object.keys(ID).filter(k=>k!=='_meta');
-  const totalU=meta.total_unidades||0;
-  const totalSKU=meta.total_skus||0;
-  const topPdv=pdvsData.reduce((a,b)=>(ID[a]?.total_unidades||0)>(ID[b]?.total_unidades||0)?a:b,pdvsData[0]||'001');
-  const prevMes=MESES[MESES.indexOf(curMes)-1];
-  const prevID=prevMes?ALLMONTHS[prevMes]?.inventario:null;
-  const prevU=prevID?(prevID._meta?.total_unidades||0):0;
-  const varU=prevU>0?((totalU-prevU)/prevU*100):null;
-  const varStr=varU!==null?(varU>=0?`▲ ${{varU.toFixed(1)}}%`:`▼ ${{Math.abs(varU).toFixed(1)}}%`):'—';
-  const varCol=varU===null?'var(--text2)':varU>=0?'var(--green)':'var(--red)';
-  document.getElementById('iKpiRow').innerHTML=`
-    <div class="kpi c1"><div class="kpi-label">Total Unidades</div><div class="kpi-val">${{Math.round(totalU).toLocaleString('es-CO')}}</div><div class="kpi-sub">Inventario final del mes</div></div>
-    <div class="kpi c2"><div class="kpi-label">SKUs Únicos</div><div class="kpi-val">${{totalSKU}}</div><div class="kpi-sub">Referencias distintas</div></div>
-    <div class="kpi c3"><div class="kpi-label">Mayor Stock</div><div class="kpi-val">${{ID[topPdv]?.name||'—'}}</div><div class="kpi-sub">${{Math.round(ID[topPdv]?.total_unidades||0).toLocaleString('es-CO')}} uds</div></div>
-    <div class="kpi c5"><div class="kpi-label">vs Mes Anterior</div><div class="kpi-val" style="color:${{varCol}}">${{varStr}}</div><div class="kpi-sub">${{prevMes||'Sin datos previos'}}</div></div>`;
-}}
-
-function buildINav(){{
-  const ID=ALLMONTHS[curMes].inventario||{{}};
-  const nav=document.getElementById('iNav');nav.innerHTML='';
-  const a=document.createElement('button');a.className='pdv-btn active';a.dataset.id='all';a.textContent='🏪 Todos';
-  a.onclick=()=>selectIPdv('all');nav.appendChild(a);
-  const pdvs=(ID._meta?.pdvs_con_datos||[]).sort();
+  // Populate PDV dropdown
+  const sel=document.getElementById('iPdvSel');
+  sel.innerHTML='<option value="all">🏪 Todos los PDV</option>';
+  const pdvs=(meta.pdvs_con_datos||[]).filter(co=>PDV_ORDER.includes(co)).sort();
   pdvs.forEach(co=>{{
-    const i=gd_pdv_idx(co);
-    const b=document.createElement('button');b.className='pdv-btn';b.dataset.id=co;
-    b.innerHTML=`<span style="color:${{COLORS[i]}};margin-right:3px">●</span>${{co}} ${{ID[co]?.name||co}}`;
-    b.onclick=()=>selectIPdv(co);nav.appendChild(b);
+    const opt=document.createElement('option');
+    opt.value=co;opt.textContent=`${{co}} – ${{ID[co]?.name||co}}`;
+    sel.appendChild(opt);
   }});
 }}
 
-function gd_pdv_idx(co){{return PDV_ORDER.indexOf(co);}}
+function buildINav(){{/* replaced by dropdown */}}
 
-function selectIPdv(id){{
-  document.querySelectorAll('#iNav .pdv-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===id));
-  curIPdv=id;
-  document.getElementById('iAll').style.display=id==='all'?'':'none';
-  document.getElementById('iPdv').style.display=id!=='all'?'':'none';
-  document.getElementById('iBread').style.display=id!=='all'?'flex':'none';
-  if(id==='all')renderIAll();else renderIPdv(id);
-}}
+function selectIPdv(){{/* replaced by renderIAll with dropdown */}}
 
 function renderIAll(){{
   const ID=ALLMONTHS[curMes].inventario||{{}};
-  const pdvs=(ID._meta?.pdvs_con_datos||[]).sort();
-  const labels=pdvs.map(co=>ID[co]?.name||co);
-  const vals=pdvs.map(co=>ID[co]?.total_unidades||0);
-  const cols=pdvs.map(co=>COLORS[gd_pdv_idx(co)]);
+  const meta=ID._meta||{{}};
+  const selCo=document.getElementById('iPdvSel').value;
+  // Actualizar KPIs según PDV seleccionado
+  const {{pdvStats,totVal,totDias,totRot,totVentas,totCogs,totCompras,totNomina}}=calcInvVal(curMes);
+  const prevMes=MESES[MESES.indexOf(curMes)-1];
+  const prevID=prevMes?ALLMONTHS[prevMes]?.inventario:null;
+  if(selCo==='all'){{
+    const prevU=prevID?(prevID._meta?.total_unidades||0):0;
+    const totalU=meta.total_unidades||0;
+    const varU=prevU>0?((totalU-prevU)/prevU*100):null;
+    const varStr=varU!==null?(varU>=0?`▲ ${{varU.toFixed(1)}}%`:`▼ ${{Math.abs(varU).toFixed(1)}}%`):'—';
+    const varCol=varU===null?'var(--text2)':varU>=0?'var(--green)':'var(--red)';
+    document.getElementById('iKpiRow').innerHTML=`
+      <div class="kpi c1"><div class="kpi-label">Valorización Total</div><div class="kpi-val" style="font-size:18px">${{fmtFull(totVal)}}</div><div class="kpi-sub">Todos los PDV</div></div>
+      <div class="kpi c2"><div class="kpi-label">Días Inventario</div><div class="kpi-val">${{totDias}}</div><div class="kpi-sub">Días de cobertura</div></div>
+      <div class="kpi c3"><div class="kpi-label">Rotación Anual</div><div class="kpi-val">${{totRot}}</div><div class="kpi-sub">Veces por año</div></div>
+      <div class="kpi c5"><div class="kpi-label">vs Mes Anterior</div><div class="kpi-val" style="color:${{varCol}}">${{varStr}}</div><div class="kpi-sub">${{prevMes?'Unidades vs '+prevMes:'Sin datos previos'}}</div></div>`;
+  }} else {{
+    const p=pdvStats.find(s=>s.co===selCo)||{{}};
+    const prevU=prevID?(prevID[selCo]?.total_unidades||0):0;
+    const totalU=ID[selCo]?.total_unidades||0;
+    const varU=prevU>0?((totalU-prevU)/prevU*100):null;
+    const varStr=varU!==null?(varU>=0?`▲ ${{varU.toFixed(1)}}%`:`▼ ${{Math.abs(varU).toFixed(1)}}%`):'—';
+    const varCol=varU===null?'var(--text2)':varU>=0?'var(--green)':'var(--red)';
+    document.getElementById('iKpiRow').innerHTML=`
+      <div class="kpi c1"><div class="kpi-label">Valorización PDV</div><div class="kpi-val" style="font-size:18px">${{fmtFull(p.val||0)}}</div><div class="kpi-sub">PDV ${{selCo}} – ${{p.name||selCo}}</div></div>
+      <div class="kpi c2"><div class="kpi-label">Días Inventario</div><div class="kpi-val">${{p.dias||0}}</div><div class="kpi-sub">Días de cobertura</div></div>
+      <div class="kpi c3"><div class="kpi-label">Rotación Anual</div><div class="kpi-val">${{p.rot||0}}</div><div class="kpi-sub">Veces por año</div></div>
+      <div class="kpi c5"><div class="kpi-label">vs Mes Anterior</div><div class="kpi-val" style="color:${{varCol}}">${{varStr}}</div><div class="kpi-sub">${{prevMes?'Unidades vs '+prevMes:'Sin datos previos'}}</div></div>`;
+  }}
 
-  dc('iBarAll');
-  charts.iBarAll=new Chart(document.getElementById('iBarAll'),{{
-    type:'bar',data:{{labels,datasets:[{{label:'Unidades',data:vals,backgroundColor:cols.map(c=>c+'bb'),borderColor:cols,borderWidth:2,borderRadius:5}}]}},
-    options:{{plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:ctx=>` ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`}}}}}},
-      scales:{{x:{{ticks:{{color:'#8b90b0'}},grid:{{color:'rgba(46,50,72,.5)'}}}},y:{{ticks:{{color:'#8b90b0',callback:v=>Math.round(v/1000)+'K'}},grid:{{color:'rgba(46,50,72,.5)'}}}}}}}}
+  // Build flat item list for selected scope
+  let items=[];
+  if(selCo==='all'){{
+    // merge all_items across PDVs, group by ref
+    const merged={{}};
+    const pdvs=(meta.pdvs_con_datos||[]).filter(co=>PDV_ORDER.includes(co));
+    pdvs.forEach(co=>{{
+      (ID[co]?.all_items||[]).forEach(it=>{{
+        if(!merged[it.ref])merged[it.ref]={{ref:it.ref,name:it.name,um:it.um,unidades:0,pdv:'Varios'}};
+        merged[it.ref].unidades+=it.unidades;
+      }});
+    }});
+    items=Object.values(merged).sort((a,b)=>b.unidades-a.unidades);
+  }} else {{
+    items=(ID[selCo]?.all_items||[]).map(it=>({{...it,pdv:ID[selCo]?.name||selCo}}));
+  }}
+  invAllItems=items;
+  document.getElementById('iSearch').value='';
+
+  // Top-20 chart
+  const top20=items.slice(0,20);
+  const subLabel=selCo==='all'?'Todos los PDV':`PDV ${{selCo}} – ${{ID[selCo]?.name||selCo}}`;
+  document.getElementById('iChartSub').textContent=subLabel;
+  dc('iTopChart');
+  charts.iTopChart=new Chart(document.getElementById('iTopChart'),{{
+    type:'bar',
+    data:{{
+      labels:top20.map(t=>t.name.length>35?t.name.slice(0,33)+'…':t.name),
+      datasets:[{{label:'Existencia',data:top20.map(t=>t.unidades),
+        backgroundColor:CAT_COLORS.map((c,i)=>i<top20.length?c+'cc':'transparent'),
+        borderColor:CAT_COLORS.slice(0,top20.length),borderWidth:1.5,borderRadius:5}}]
+    }},
+    options:{{indexAxis:'y',
+      plugins:{{legend:{{display:false}},
+        tooltip:{{callbacks:{{label:ctx=>` ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`}}}}}},
+      scales:{{
+        x:{{ticks:{{color:'#8b90b0',callback:v=>v>=1000?Math.round(v/1000)+'K':v}},grid:{{color:'rgba(46,50,72,.5)'}}}},
+        y:{{ticks:{{color:'#8b90b0',font:{{size:10}}}},grid:{{color:'rgba(46,50,72,.3)'}}}}
+      }}}}
   }});
 
-  dc('iDonut');
-  charts.iDonut=new Chart(document.getElementById('iDonut'),{{
-    type:'doughnut',data:{{labels,datasets:[{{data:vals,backgroundColor:cols,borderWidth:2,borderColor:'#1a1d27'}}]}},
-    options:{{plugins:{{legend:{{position:'right',labels:{{color:'#8b90b0',font:{{size:11}},padding:9}}}},
-      tooltip:{{callbacks:{{label:ctx=>` ${{ctx.label}}: ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`}}}}}},cutout:'60%'}}
-  }});
-
-  // Evolución mes a mes
+  // Evolution line chart (PDV breakdown mes a mes)
   dc('iLineEvo');
   const mesLabels=MESES.filter(m=>ALLMONTHS[m]?.inventario?._meta);
-  const dsEvo=pdvs.map((co,i)=>{{
-    return{{
-      label:ID[co]?.name||co,
-      data:mesLabels.map(m=>ALLMONTHS[m]?.inventario?.[co]?.total_unidades||0),
-      borderColor:cols[i],backgroundColor:'transparent',borderWidth:2.5,
-      pointRadius:5,pointHoverRadius:7,tension:.3
-    }};
-  }});
+  let dsEvo;
+  if(selCo==='all'){{
+    const pdvs=(meta.pdvs_con_datos||[]).filter(co=>PDV_ORDER.includes(co)).sort();
+    dsEvo=pdvs.map((co,i)=>{{
+      const col=COLORS[gd_pdv_idx(co)];
+      return{{label:ID[co]?.name||co,
+        data:mesLabels.map(m=>ALLMONTHS[m]?.inventario?.[co]?.total_unidades||0),
+        borderColor:col,backgroundColor:'transparent',borderWidth:2.5,pointRadius:5,pointHoverRadius:7,tension:.3}};
+    }});
+  }} else {{
+    const col=COLORS[gd_pdv_idx(selCo)];
+    dsEvo=[{{label:ID[selCo]?.name||selCo,
+      data:mesLabels.map(m=>ALLMONTHS[m]?.inventario?.[selCo]?.total_unidades||0),
+      borderColor:col,backgroundColor:col+'22',fill:true,borderWidth:2.5,pointRadius:5,tension:.3}}];
+  }}
   charts.iLineEvo=new Chart(document.getElementById('iLineEvo'),{{
     type:'line',data:{{labels:mesLabels,datasets:dsEvo}},
     options:{{plugins:{{legend:{{position:'bottom',labels:{{color:'#8b90b0',font:{{size:11}},boxWidth:10,padding:10}}}},
@@ -1194,105 +1267,74 @@ function renderIAll(){{
         y:{{ticks:{{color:'#8b90b0',callback:v=>Math.round(v/1000)+'K'}},grid:{{color:'rgba(46,50,72,.5)'}}}}}}}}
   }});
 
-  // Top global
-  dc('iTopGlobal');
-  const top15=(ID._meta?.top_items_global||[]).slice(0,15);
-  charts.iTopGlobal=new Chart(document.getElementById('iTopGlobal'),{{
-    type:'bar',
-    data:{{labels:top15.map(t=>t.name.length>30?t.name.slice(0,28)+'…':t.name),
-      datasets:[{{label:'Unidades',data:top15.map(t=>t.unidades),
-        backgroundColor:CAT_COLORS.map(c=>c+'bb'),borderColor:CAT_COLORS,borderWidth:1.5,borderRadius:4}}]}},
-    options:{{indexAxis:'y',plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:ctx=>` ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`}}}}}},
-      scales:{{x:{{ticks:{{color:'#8b90b0',callback:v=>Math.round(v/1000)+'K'}},grid:{{color:'rgba(46,50,72,.5)'}}}},
-        y:{{ticks:{{color:'#8b90b0',font:{{size:10}}}},grid:{{color:'rgba(46,50,72,.3)'}}}}}}}}
-  }});
+  // Tabla maestra: Inventario × Ventas × Compras × Nómina
+  const statsSorted=[...pdvStats].sort((a,b)=>b.val-a.val);
+  const totPctNom=totVentas>0?(totNomina/totVentas*100):0;
+  document.getElementById('iValTable').innerHTML=`
+    <thead><tr>
+      <th>PDV</th>
+      <th>Valorización</th><th>% Part.</th><th>Días Inv.</th><th>Rotación</th>
+      <th>Ventas Mes</th><th>COGS Mes</th><th>Compras Mes</th><th>Nómina %</th>
+    </tr></thead>
+    <tbody>${{statsSorted.map(p=>{{
+      const col=COLORS[gd_pdv_idx(p.co)];
+      const diasCol=p.dias<35?'var(--green)':p.dias<55?'var(--yellow)':'var(--red)';
+      const nomCol=p.pctNom<8?'var(--green)':p.pctNom<12?'var(--yellow)':'var(--red)';
+      const pct=totVal>0?(p.val/totVal*100).toFixed(1):0;
+      return`<tr>
+        <td><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${{col}};margin-right:5px"></span><strong>${{p.name}}</strong></td>
+        <td style="font-weight:700">${{fmtFull(p.val)}}</td>
+        <td><div style="display:flex;align-items:center;gap:4px">
+          <div class="bar-t" style="width:50px"><div class="bar-f" style="width:${{pct}}%;background:${{col}}"></div></div>
+          ${{pct}}%</div></td>
+        <td><span style="color:${{diasCol}};font-weight:700">${{p.dias}}</span></td>
+        <td style="color:var(--text2)">${{p.rot}}</td>
+        <td>${{fmtFull(p.ventas)}}</td>
+        <td style="color:var(--text2)">${{fmtFull(p.cogs)}}</td>
+        <td style="color:#a78bfa">${{fmtFull(p.compras)}}</td>
+        <td><span class="pill ${{p.pctNom<8?'pg':p.pctNom<12?'py':'pr'}}">${{p.pctNom.toFixed(1)}}%</span></td>
+      </tr>`;
+    }}).join('')}}
+    <tr style="background:var(--surface2);font-weight:700;border-top:2px solid var(--border)">
+      <td>Total empresa</td>
+      <td>${{fmtFull(totVal)}}</td><td>100 %</td>
+      <td>${{totDias}}</td><td>${{totRot}}</td>
+      <td>${{fmtFull(totVentas)}}</td><td style="color:var(--text2)">${{fmtFull(totCogs)}}</td>
+      <td style="color:#a78bfa">${{fmtFull(totCompras)}}</td>
+      <td><span class="pill ${{totPctNom<8?'pg':totPctNom<12?'py':'pr'}}">${{totPctNom.toFixed(1)}}%</span></td>
+    </tr></tbody>`;
 
-  const grand=ID._meta?.total_unidades||1;
-  const sortedPdv=[...pdvs].sort((a,b)=>(ID[b]?.total_unidades||0)-(ID[a]?.total_unidades||0));
-  document.getElementById('iOvTable').innerHTML=`
-    <thead><tr><th>#</th><th>PDV</th><th>SKUs</th><th>Total Unidades</th><th>Participación</th></tr></thead>
-    <tbody>${{sortedPdv.map((co,i)=>{{
-      const d=ID[co];const col=COLORS[gd_pdv_idx(co)];
-      const pct=(d.total_unidades/grand*100).toFixed(1);
-      return`<tr><td style="color:${{col}};font-weight:700">#${{i+1}}</td>
-        <td><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${{col}};margin-right:6px"></span><strong>${{co}} ${{d.name}}</strong></td>
-        <td>${{d.total_skus}}</td>
-        <td><strong>${{Math.round(d.total_unidades).toLocaleString('es-CO')}}</strong></td>
-        <td><div style="display:flex;align-items:center;gap:5px">
-          <div class="bar-t" style="width:80px"><div class="bar-f" style="width:${{pct}}%;background:${{col}}"></div></div>
-          <span>${{pct}}%</span></div></td></tr>`;
-    }}).join('')}}</tbody>`;
-}}
-
-function renderIPdv(co){{
-  const ID=ALLMONTHS[curMes].inventario||{{}};
-  const d=ID[co];if(!d)return;
-  const col=COLORS[gd_pdv_idx(co)];
-  document.getElementById('iBread').innerHTML=
-    `<span class="bc-link" onclick="selectIPdv('all')">🏪 Todos</span>
-     <span style="color:var(--border)">›</span><span class="bc-current">PDV ${{co}} – ${{d.name}}</span>`;
-
-  // Bar top 15
-  dc('iBarPdv');
-  const top15=d.top_items.slice(0,15);
-  charts.iBarPdv=new Chart(document.getElementById('iBarPdv'),{{
-    type:'bar',
-    data:{{labels:top15.map(t=>t.name.length>30?t.name.slice(0,28)+'…':t.name),
-      datasets:[{{label:'Unidades',data:top15.map(t=>t.unidades),
-        backgroundColor:col+'bb',borderColor:col,borderWidth:1.5,borderRadius:4}}]}},
-    options:{{indexAxis:'y',plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:ctx=>` ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`}}}}}},
-      scales:{{x:{{ticks:{{color:'#8b90b0',callback:v=>Math.round(v/1000)>0?Math.round(v/1000)+'K':v}},grid:{{color:'rgba(46,50,72,.5)'}}}},
-        y:{{ticks:{{color:'#8b90b0',font:{{size:10}}}},grid:{{color:'rgba(46,50,72,.3)'}}}}}}}}
-  }});
-
-  // Evolución del PDV a través de los meses
-  dc('iLinePdv');
-  const mesLabels=MESES.filter(m=>ALLMONTHS[m]?.inventario?.[co]);
-  const uEvo=mesLabels.map(m=>ALLMONTHS[m].inventario[co]?.total_unidades||0);
-  const skuEvo=mesLabels.map(m=>ALLMONTHS[m].inventario[co]?.total_skus||0);
-  charts.iLinePdv=new Chart(document.getElementById('iLinePdv'),{{
-    type:'line',
-    data:{{labels:mesLabels,datasets:[
-      {{label:'Unidades',data:uEvo,borderColor:col,backgroundColor:col+'22',fill:true,borderWidth:2.5,pointRadius:5,tension:.3,yAxisID:'y'}},
-      {{label:'SKUs',data:skuEvo,borderColor:'#a78bfa',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointRadius:4,tension:.3,yAxisID:'y2'}}
-    ]}},
-    options:{{plugins:{{legend:{{position:'top',labels:{{color:'#8b90b0',font:{{size:11}}}}}},
-      tooltip:{{callbacks:{{label:ctx=>ctx.datasetIndex===0?` ${{Math.round(ctx.raw).toLocaleString('es-CO')}} uds`:` ${{ctx.raw}} SKUs`}}}}}},
-      scales:{{
-        x:{{ticks:{{color:'#8b90b0'}},grid:{{color:'rgba(46,50,72,.3)'}}}},
-        y:{{ticks:{{color:col,callback:v=>Math.round(v/1000)>0?Math.round(v/1000)+'K':v}},grid:{{color:'rgba(46,50,72,.4)'}},position:'left'}},
-        y2:{{ticks:{{color:'#a78bfa'}},grid:{{display:false}},position:'right'}}
-      }}}}
-  }});
-
-  // Tabla completa con búsqueda
-  invAllItems=d.all_items;
-  renderInvTable(invAllItems);
-  document.getElementById('iSearch').value='';
+  renderInvTable(items);
 }}
 
 function renderInvTable(items){{
+  const shown=items.slice(0,300);
+  document.getElementById('iTableCount').textContent=
+    items.length>300?`Mostrando 300 de ${{items.length.toLocaleString('es-CO')}} ítems`:`${{items.length.toLocaleString('es-CO')}} ítems`;
   const grand=items.reduce((s,i)=>s+i.unidades,0)||1;
+  const grandVal=shown.reduce((s,i)=>s+(i.valor||0),0)||1;
   document.getElementById('iAllTable').innerHTML=`
-    <thead><tr><th>#</th><th>Referencia</th><th>Descripción</th><th>U.M.</th><th>Existencia</th><th>% del PDV</th></tr></thead>
-    <tbody>${{items.map((it,i)=>{{
-      const pct=(it.unidades/grand*100).toFixed(2);
-      const col=CAT_COLORS[i%10];
-      return`<tr><td style="color:var(--text3)">${{i+1}}</td>
-        <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text2)">${{it.ref}}</td>
+    <thead><tr><th>#</th><th>Referencia</th><th>Descripción</th><th>U.M.</th><th>Existencia</th><th>Costo Unit.</th><th>Valorización</th><th>% Val.</th></tr></thead>
+    <tbody>${{shown.map((it,i)=>{{
+      const pct=((it.valor||0)/grandVal*100);
+      const col=CAT_COLORS[i%CAT_COLORS.length];
+      return`<tr><td style="color:var(--text3);font-size:11px">${{i+1}}</td>
+        <td style="font-family:monospace;font-size:11px;color:var(--text2)">${{it.ref}}</td>
         <td><strong>${{it.name}}</strong></td>
         <td style="color:var(--text2);font-size:11px">${{it.um}}</td>
-        <td style="font-variant-numeric:tabular-nums;font-weight:600">${{Math.round(it.unidades).toLocaleString('es-CO')}}</td>
-        <td><div style="display:flex;align-items:center;gap:5px">
-          <div class="bar-t" style="width:70px"><div class="bar-f" style="width:${{Math.min(parseFloat(pct)*5,100)}}%;background:${{col}}"></div></div>
-          <span style="font-size:10px;color:var(--text2)">${{pct}}%</span></div></td></tr>`;
+        <td style="font-variant-numeric:tabular-nums">${{Math.round(it.unidades).toLocaleString('es-CO')}}</td>
+        <td style="color:var(--text2);font-size:11px">${{(it.costo_unit||0).toLocaleString('es-CO',{{style:'currency',currency:'COP',maximumFractionDigits:0}})}}</td>
+        <td style="font-weight:700">${{fmtFull(it.valor||0)}}</td>
+        <td><div style="display:flex;align-items:center;gap:4px">
+          <div class="bar-t" style="width:60px"><div class="bar-f" style="width:${{Math.min(pct*10,100)}}%;background:${{col}}"></div></div>
+          <span style="font-size:10px;color:var(--text2)">${{pct.toFixed(1)}}%</span></div></td></tr>`;
     }}).join('')}}</tbody>`;
 }}
 
 function filterInv(){{
   const q=document.getElementById('iSearch').value.toLowerCase().trim();
   if(!q){{renderInvTable(invAllItems);return;}}
-  renderInvTable(invAllItems.filter(it=>it.name.toLowerCase().includes(q)||it.ref.includes(q)));
+  renderInvTable(invAllItems.filter(it=>it.name.toLowerCase().includes(q)||it.ref.toLowerCase().includes(q)));
 }}
 
 // ══════════ ALERTAS ══════════
@@ -1381,7 +1423,7 @@ function renderTab(t){{
   document.getElementById('vAll').style.display='';document.getElementById('vPdv').style.display='none';document.getElementById('vBread').style.display='none';
   document.getElementById('nAll').style.display='';document.getElementById('nPdv').style.display='none';document.getElementById('nBread').style.display='none';
   document.getElementById('cAll').style.display='';document.getElementById('cPdv').style.display='none';document.getElementById('cBread').style.display='none';
-  document.getElementById('iAll').style.display='';document.getElementById('iPdv').style.display='none';document.getElementById('iBread').style.display='none';
+  if(document.getElementById('iPdvSel'))document.getElementById('iPdvSel').value='all';
   if(t==='ventas'){{initVKpis();buildVNav();renderVAll();}}
   if(t==='nomina'){{initNKpis();buildNNav();renderNAll();}}
   if(t==='compras'){{initCKpis();buildCNav();renderCAll();}}
