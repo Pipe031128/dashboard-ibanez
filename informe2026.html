@@ -223,59 +223,93 @@ body.mobile-mode .main{padding-bottom:72px;}
     <div class="page-sub">Período: Abril – Septiembre 2026 · 8 Puntos de Venta</div>
   </div>
   <div id="r-kpis" class="kpi-row kpi-4"></div>
+  <div id="r-kpis2" class="kpi-row kpi-4" style="margin-top:-4px"></div>
   <div class="g2">
-    <div class="card"><div class="card-title">📈 Evolución Ventas Mensuales</div>
-      <div style="height:210px"><canvas id="ch-resumen-bar"></canvas></div></div>
+    <div class="card"><div class="card-title">📈 Evolución Ventas vs Compras</div>
+      <div style="height:220px"><canvas id="ch-resumen-bar"></canvas></div></div>
     <div class="card"><div class="card-title">🥧 Participación Sep. por PDV</div>
-      <div style="height:210px"><canvas id="ch-resumen-pie"></canvas></div></div>
+      <div style="height:220px"><canvas id="ch-resumen-pie"></canvas></div></div>
   </div>
-  <div class="card"><div class="card-title">📋 Consolidado Abril – Septiembre</div>
+  <div class="card"><div class="card-title">📋 Consolidado Mensual Abril – Septiembre</div>
     <div class="tw"><table>
-      <thead><tr><th>Mes</th><th class="r">Ventas</th><th class="r">Compras</th><th class="r">Nómina</th><th class="r">Nóm%</th><th class="r">Inventario</th><th class="r">Margen</th></tr></thead>
+      <thead><tr><th>Mes</th><th class="r">Ventas</th><th class="r">Compras</th><th class="r">Nómina</th><th class="r">Nóm%</th><th class="r">Margen</th><th class="r">Inventario</th><th class="r">Empl.</th><th class="r">Vtas/Empl.</th></tr></thead>
       <tbody id="t-resumen"></tbody>
     </table></div></div>
+  <div class="card"><div class="card-title">🗂️ Matriz Ventas por PDV × Mes <span class="badge" id="r-matrix-badge"></span></div>
+    <div class="tw"><table id="t-matrix-ventas"></table></div></div>
+  <div class="card"><div class="card-title">📈 Evolución % Nómina / Ventas — todos los PDV</div>
+    <div style="height:230px"><canvas id="ch-resumen-nom"></canvas></div></div>
 </div>
 
 <!-- VENTAS -->
 <div id="sec-ventas" class="section">
   <div class="page-header"><div class="page-title">💰 Ventas</div><div class="page-sub">Por Punto de Venta</div></div>
   <div class="mes-tabs" id="v-tabs"></div>
-  <div id="v-kpis" class="kpi-row kpi-3"></div>
-  <div class="card"><div class="card-title">Ranking PDV <span class="badge" id="v-badge"></span></div>
+  <div id="v-kpis" class="kpi-row kpi-4"></div>
+  <div class="card"><div class="card-title">🏆 Ranking PDV <span class="badge" id="v-badge"></span></div>
     <div class="tw"><table>
-      <thead><tr><th>PDV</th><th class="r">Ventas</th><th class="r">Margen</th><th class="r">vs Mes Ant.</th><th>Part.</th></tr></thead>
+      <thead><tr><th>Pos.</th><th>PDV</th><th class="r">Ventas</th><th class="r">Sin Cárn.</th><th class="r">Margen</th><th class="r">vs Mes Ant.</th><th class="r">% Red</th><th>Participación</th></tr></thead>
       <tbody id="t-ventas"></tbody>
     </table></div></div>
-  <div class="card"><div class="card-title">📈 Tendencia Ventas por PDV</div>
-    <div style="height:250px"><canvas id="ch-ventas-line"></canvas></div></div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📈 Tendencia Ventas por PDV</div>
+      <div style="height:240px"><canvas id="ch-ventas-line"></canvas></div></div>
+    <div class="card"><div class="card-title">⚖️ Con vs Sin Carnicería</div>
+      <div style="height:240px"><canvas id="ch-ventas-cvsn"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title">📊 Ventas Acumuladas YTD por PDV</div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Abr</th><th class="r">May</th><th class="r">Jun</th><th class="r">Jul</th><th class="r">Ago</th><th class="r">Sep</th><th class="r">YTD Total</th><th class="r">Mejor Mes</th></tr></thead>
+      <tbody id="t-ventas-ytd"></tbody>
+    </table></div></div>
 </div>
 
 <!-- COMPRAS -->
 <div id="sec-compras" class="section">
   <div class="page-header"><div class="page-title">🛒 Compras</div><div class="page-sub">Abastecimiento y relación con ventas</div></div>
   <div class="mes-tabs" id="c-tabs"></div>
-  <div id="c-kpis" class="kpi-row kpi-3"></div>
-  <div class="card"><div class="card-title">Compras vs Ventas <span class="badge" id="c-badge"></span></div>
+  <div id="c-kpis" class="kpi-row kpi-4"></div>
+  <div class="card"><div class="card-title">📦 Compras vs Ventas vs COGS <span class="badge" id="c-badge"></span></div>
     <div class="tw"><table>
-      <thead><tr><th>PDV</th><th class="r">Compras</th><th class="r">Ventas</th><th class="r">Ratio C/V</th><th>Evaluación</th></tr></thead>
+      <thead><tr><th>PDV</th><th class="r">Compras</th><th class="r">Ventas</th><th class="r">COGS</th><th class="r">Ratio C/V</th><th class="r">Ratio C/COGS</th><th>Evaluación</th></tr></thead>
       <tbody id="t-compras"></tbody>
     </table></div></div>
-  <div class="card"><div class="card-title">📈 Evolución Compras</div>
-    <div style="height:250px"><canvas id="ch-compras"></canvas></div></div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📈 Evolución Compras por PDV</div>
+      <div style="height:230px"><canvas id="ch-compras"></canvas></div></div>
+    <div class="card"><div class="card-title">📊 Ratio Compras/Ventas por PDV</div>
+      <div style="height:230px"><canvas id="ch-compras-ratio"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title">📋 Histórico Compras por PDV (todos los meses)</div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Abr</th><th class="r">May</th><th class="r">Jun</th><th class="r">Jul</th><th class="r">Ago</th><th class="r">Sep</th><th class="r">Total</th></tr></thead>
+      <tbody id="t-compras-hist"></tbody>
+    </table></div></div>
 </div>
 
 <!-- NÓMINA -->
 <div id="sec-nomina" class="section">
   <div class="page-header"><div class="page-title">👥 Nómina</div><div class="page-sub">Semáforo: &lt;8% 🟢 · 8-12% 🟡 · &gt;12% 🔴</div></div>
   <div class="mes-tabs" id="n-tabs"></div>
-  <div id="n-kpis" class="kpi-row kpi-3"></div>
-  <div class="card"><div class="card-title">🚦 Semáforo por PDV <span class="badge" id="n-badge"></span></div>
+  <div id="n-kpis" class="kpi-row kpi-4"></div>
+  <div class="card"><div class="card-title">🚦 Semáforo Detallado por PDV <span class="badge" id="n-badge"></span></div>
     <div class="tw"><table>
-      <thead><tr><th>PDV</th><th class="r">Devengo</th><th class="r">Ventas</th><th class="r">% Nóm</th><th class="r">Empl.</th><th class="r">Vtas/Empl.</th><th>Estado</th></tr></thead>
+      <thead><tr><th>PDV</th><th class="r">Devengo</th><th class="r">Ventas</th><th class="r">% Nóm</th><th class="r">Empl.</th><th class="r">Vtas/Empl.</th><th class="r">Dev/Empl.</th><th>Estado</th></tr></thead>
       <tbody id="t-nomina"></tbody>
     </table></div></div>
-  <div class="card"><div class="card-title">📈 Evolución % Nómina/Ventas</div>
-    <div style="height:230px"><canvas id="ch-nomina"></canvas></div></div>
+  <div class="card"><div class="card-title">🗂️ Semáforo Histórico — % Nómina/Ventas por PDV × Mes</div>
+    <div class="tw"><table id="t-semaforo-matrix"></table></div></div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📈 Evolución % Nómina/Ventas</div>
+      <div style="height:220px"><canvas id="ch-nomina"></canvas></div></div>
+    <div class="card"><div class="card-title">💵 Ventas por Empleado (Sep.)</div>
+      <div style="height:220px"><canvas id="ch-nom-vpe"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title">📋 Histórico Nómina y Empleados</div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Abr Dev.</th><th class="r">May Dev.</th><th class="r">Jun Dev.</th><th class="r">Jul Dev.</th><th class="r">Ago Dev.</th><th class="r">Sep Dev.</th><th class="r">Total YTD</th></tr></thead>
+      <tbody id="t-nom-hist"></tbody>
+    </table></div></div>
 </div>
 
 <!-- INVENTARIO -->
@@ -285,11 +319,22 @@ body.mobile-mode .main{padding-bottom:72px;}
   <div id="i-kpis" class="kpi-row kpi-4"></div>
   <div class="card"><div class="card-title">💰 Inventario × Operaciones <span class="badge" id="i-badge"></span></div>
     <div class="tw"><table>
-      <thead><tr><th>PDV</th><th class="r">Valorización</th><th class="r">% Part.</th><th class="r">Días Inv.</th><th class="r">Rot. Anual</th><th class="r">SKUs</th><th>Cobertura</th></tr></thead>
+      <thead><tr><th>PDV</th><th class="r">Valorización</th><th class="r">Unidades</th><th class="r">SKUs</th><th class="r">% Part.</th><th class="r">COGS Mes</th><th class="r">Días Inv.</th><th class="r">Rot. Anual</th><th>Estado</th></tr></thead>
       <tbody id="t-inv"></tbody>
     </table></div></div>
-  <div class="card"><div class="card-title">📈 Evolución Valorización</div>
-    <div style="height:250px"><canvas id="ch-inv"></canvas></div></div>
+  <div class="card"><div class="card-title">🗂️ Días Inventario por PDV × Mes</div>
+    <div class="tw"><table id="t-dias-matrix"></table></div></div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📈 Evolución Valorización</div>
+      <div style="height:230px"><canvas id="ch-inv"></canvas></div></div>
+    <div class="card"><div class="card-title">📦 Días Inventario Sep.</div>
+      <div style="height:230px"><canvas id="ch-inv-dias"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title">📋 Histórico Valorización por PDV</div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Abr</th><th class="r">May</th><th class="r">Jun</th><th class="r">Jul</th><th class="r">Ago</th><th class="r">Sep</th><th class="r">Var. Abr→Sep</th></tr></thead>
+      <tbody id="t-inv-hist"></tbody>
+    </table></div></div>
 </div>
 
 <!-- COMPARAR -->
@@ -447,28 +492,56 @@ function activateTab(containerId,mes){
 function renderResumen(){
   const m='Septiembre',mp='Agosto';
   const tv=totV(m),tc=totC(m),tn=totN(m),tvp=totV(mp),mg=wMg(m);
+  const ti=totI(m);
+  const totEmp=PDV_ORDER.reduce((s,co)=>s+(DATA[m].nomina[co]?.emp||0),0);
+  const totEmpP=PDV_ORDER.reduce((s,co)=>s+(DATA[mp].nomina[co]?.emp||0),0);
+  const ytdV=MESES.reduce((s,mes)=>s+totV(mes),0);
+  const ytdC=MESES.reduce((s,mes)=>s+totC(mes),0);
+  const ytdN=MESES.reduce((s,mes)=>s+totN(mes),0);
+  const bestMes=MESES.reduce((a,b)=>totV(a)>totV(b)?a:b);
   document.getElementById('r-kpis').innerHTML=`
     <div class="kpi blue"><div class="kpi-label">Ventas Sep.</div><div class="kpi-val">${fmt(tv)}</div><div class="kpi-sub">${tChip(pct(tv,tvp))} vs Agosto</div></div>
-    <div class="kpi"><div class="kpi-label">Compras Sep.</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">Ratio ${(tc/tv*100).toFixed(1)}%</div></div>
+    <div class="kpi"><div class="kpi-label">Compras Sep.</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">Ratio ${(tc/tv*100).toFixed(1)}% de ventas</div></div>
     <div class="kpi ${tn/tv*100<8?'good':tn/tv*100<12?'warn':'bad'}"><div class="kpi-label">Nómina Sep.</div><div class="kpi-val">${fmt(tn)}</div><div class="kpi-sub">${(tn/tv*100).toFixed(1)}% ventas</div></div>
-    <div class="kpi purple"><div class="kpi-label">Margen Prom.</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>`;
+    <div class="kpi purple"><div class="kpi-label">Margen Sep.</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>`;
+  document.getElementById('r-kpis2').innerHTML=`
+    <div class="kpi"><div class="kpi-label">Ventas YTD (6m)</div><div class="kpi-val sm">${fmt(ytdV)}</div><div class="kpi-sub">Abr–Sep 2026</div></div>
+    <div class="kpi"><div class="kpi-label">Compras YTD</div><div class="kpi-val sm">${fmt(ytdC)}</div><div class="kpi-sub">Ratio ${(ytdC/ytdV*100).toFixed(1)}%</div></div>
+    <div class="kpi"><div class="kpi-label">Empleados Sep.</div><div class="kpi-val">${totEmp}</div><div class="kpi-sub">${tChip(pct(totEmp,totEmpP))} vs Agosto · ${fmt(tv/totEmp)} / empl.</div></div>
+    <div class="kpi"><div class="kpi-label">Mejor Mes</div><div class="kpi-val sm">${bestMes}</div><div class="kpi-sub">${fmt(totV(bestMes))}</div></div>`;
 
-  // Consolidado
+  // Consolidado con empleados
   const rows=MESES.map(mes=>{
     const tv=totV(mes),tc=totC(mes),tn=totN(mes),ti=totI(mes),mg=wMg(mes);
-    const pn=tn/tv*100;
+    const pn=tn/tv*100,emp=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].nomina[co]?.emp||0),0);
     return`<tr><td><strong>${mes}</strong></td><td class="r">${fmt(tv)}</td><td class="r">${fmt(tc)}</td>
       <td class="r">${fmt(tn)}</td><td class="r"><span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">${pn.toFixed(1)}%</span></td>
-      <td class="r">${fmt(ti)}</td><td class="r">${mg.toFixed(1)}%</td></tr>`;
+      <td class="r">${mg.toFixed(1)}%</td><td class="r">${fmt(ti)}</td>
+      <td class="r">${emp}</td><td class="r">${fmt(tv/emp)}</td></tr>`;
   }).join('');
-  const sv=MESES.reduce((s,m)=>s+totV(m),0),sc=MESES.reduce((s,m)=>s+totC(m),0),sn=MESES.reduce((s,m)=>s+totN(m),0);
-  document.getElementById('t-resumen').innerHTML=rows+`<tr class="tot"><td>TOTAL</td><td class="r">${fmt(sv)}</td><td class="r">${fmt(sc)}</td><td class="r">${fmt(sn)}</td><td class="r">${(sn/sv*100).toFixed(1)}%</td><td class="r">—</td><td class="r">—</td></tr>`;
+  const sv=ytdV,sc=ytdC,sn=ytdN;
+  document.getElementById('t-resumen').innerHTML=rows+`<tr class="tot"><td>TOTAL YTD</td><td class="r">${fmt(sv)}</td><td class="r">${fmt(sc)}</td><td class="r">${fmt(sn)}</td><td class="r">${(sn/sv*100).toFixed(1)}%</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td></tr>`;
+
+  // Matriz Ventas PDV × Mes
+  document.getElementById('r-matrix-badge').textContent=mode==='sin'?'Sin Carnicería':'Con Carnicería';
+  const hdr=`<thead><tr><th>PDV</th>${MESES.map(m=>`<th class="r">${m.slice(0,3)}</th>`).join('')}<th class="r">YTD</th><th class="r">Mejor</th></tr></thead>`;
+  const mrows=PDV_ORDER.map((co,i)=>{
+    const vals=MESES.map(m=>vGet(m,co));
+    const ytd=vals.reduce((a,b)=>a+b,0),best=Math.max(...vals),bestM=MESES[vals.indexOf(best)];
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${vals.map(v=>`<td class="r">${fmt(v)}</td>`).join('')}
+      <td class="r"><strong>${fmt(ytd)}</strong></td><td class="r"><span class="pill pb">${bestM.slice(0,3)}</span></td></tr>`;
+  }).join('');
+  const colTots=MESES.map(m=>PDV_ORDER.reduce((s,co)=>s+vGet(m,co),0));
+  const grandYtd=colTots.reduce((a,b)=>a+b,0);
+  document.getElementById('t-matrix-ventas').innerHTML=hdr+`<tbody>${mrows}<tr class="tot"><td>TOTAL</td>${colTots.map(v=>`<td class="r">${fmt(v)}</td>`).join('')}<td class="r">${fmt(grandYtd)}</td><td class="r">—</td></tr></tbody>`;
 
   dc('ch-resumen-bar');
   charts['ch-resumen-bar']=new Chart(document.getElementById('ch-resumen-bar'),{
     type:'bar',data:{labels:MESES,datasets:[
-      {label:'Ventas',data:MESES.map(m=>+(totV(m)/1e9).toFixed(3)),backgroundColor:'rgba(91,110,245,.75)',borderRadius:5},
-      {label:'Compras',data:MESES.map(m=>+(totC(m)/1e9).toFixed(3)),backgroundColor:'rgba(167,139,250,.5)',borderRadius:5}
+      {label:'Ventas',data:MESES.map(m=>+(totV(m)/1e9).toFixed(3)),backgroundColor:'rgba(91,110,245,.8)',borderRadius:5},
+      {label:'Compras',data:MESES.map(m=>+(totC(m)/1e9).toFixed(3)),backgroundColor:'rgba(167,139,250,.5)',borderRadius:5},
+      {label:'Nómina',data:MESES.map(m=>+(totN(m)/1e9).toFixed(3)),backgroundColor:'rgba(248,113,113,.5)',borderRadius:5}
     ]},options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:10}}},
       scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v.toFixed(1)}B`},grid:{color:'rgba(255,255,255,.05)'}}}}
   });
@@ -480,6 +553,18 @@ function renderResumen(){
     options:{cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}},
       tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw*1e6)}`}}}}
   });
+  dc('ch-resumen-nom');
+  charts['ch-resumen-nom']=new Chart(document.getElementById('ch-resumen-nom'),{
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>{
+      return{label:PDV_NAMES[co],data:MESES.map(m=>{const n=DATA[m].nomina[co],v=vGet(m,co);return v>0?+((n?.dev||0)/v*100).toFixed(2):0;}),
+        borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3};
+    })},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},
+        y:{ticks:{color:'#8b93b8',callback:v=>`${v}%`},grid:{color:'rgba(255,255,255,.05)'},
+          min:0,max:15,
+          afterDataLimits(axis){axis.max=Math.max(axis.max,13);}}}}
+  });
 }
 
 // ── VENTAS ────────────────────────────────────────────────────────
@@ -488,20 +573,45 @@ function renderVentas(mes){
   document.getElementById('v-badge').textContent=mes+(mode==='sin'?' · Sin Cárn.':"");
   const tv=totV(mes),pvMes=MESES[MESES.indexOf(mes)-1],tvp=pvMes?totV(pvMes):0,mg=wMg(mes);
   const best=PDV_ORDER.reduce((a,b)=>vGet(mes,a)>vGet(mes,b)?a:b);
+  const ytdVtot=MESES.reduce((s,m)=>s+totV(m),0);
+  const mYtd=MESES.slice(0,MESES.indexOf(mes)+1).reduce((s,m)=>s+totV(m),0);
   document.getElementById('v-kpis').innerHTML=`
-    <div class="kpi blue"><div class="kpi-label">Ventas Totales</div><div class="kpi-val">${fmt(tv)}</div><div class="kpi-sub">${pvMes?tChip(pct(tv,tvp))+' vs '+pvMes:'—'}</div></div>
-    <div class="kpi"><div class="kpi-label">Margen Promedio</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>
-    <div class="kpi"><div class="kpi-label">Líder</div><div class="kpi-val sm">${PDV_NAMES[best]}</div><div class="kpi-sub">${fmt(vGet(mes,best))}</div></div>`;
-  document.getElementById('t-ventas').innerHTML=PDV_ORDER.map((co,i)=>{
-    const v=vGet(mes,co),vp=pvMes?vGet(pvMes,co):0,pctT=tv>0?v/tv*100:0;
-    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+    <div class="kpi blue"><div class="kpi-label">Ventas ${mes}</div><div class="kpi-val">${fmt(tv)}</div><div class="kpi-sub">${pvMes?tChip(pct(tv,tvp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi"><div class="kpi-label">Margen Prom.</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>
+    <div class="kpi"><div class="kpi-label">Líder del Mes</div><div class="kpi-val sm">${PDV_NAMES[best]}</div><div class="kpi-sub">${fmt(vGet(mes,best))} · ${(vGet(mes,best)/tv*100).toFixed(1)}% de la red</div></div>
+    <div class="kpi purple"><div class="kpi-label">YTD Acum.</div><div class="kpi-val sm">${fmt(mYtd)}</div><div class="kpi-sub">Abr → ${mes}</div></div>`;
+
+  // Ranking con Sin Cárn.
+  const sorted=[...PDV_ORDER].sort((a,b)=>vGet(mes,b)-vGet(mes,a));
+  document.getElementById('t-ventas').innerHTML=sorted.map((co,rank)=>{
+    const i=PDV_ORDER.indexOf(co);
+    const v=vGet(mes,co),vs=DATA[mes].ventas[co]?.sin||0,vp=pvMes?vGet(pvMes,co):0,pctT=tv>0?v/tv*100:0;
+    const mg=DATA[mes].ventas[co]?.margin||0;
+    return`<tr><td style="color:var(--fg3);font-weight:700">${rank+1}</td>
+      <td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
       <td class="r">${fmt(v)}</td>
-      <td class="r"><span class="pill ${DATA[mes].ventas[co]?.margin>20?'pg':DATA[mes].ventas[co]?.margin>18?'pb':'py'}">${(DATA[mes].ventas[co]?.margin||0).toFixed(1)}%</span></td>
+      <td class="r" style="color:var(--fg2)">${fmt(vs)}</td>
+      <td class="r"><span class="pill ${mg>20?'pg':mg>18?'pb':'py'}">${mg.toFixed(1)}%</span></td>
       <td class="r">${vp>0?tChip(pct(v,vp)):'—'}</td>
-      <td><div style="display:flex;align-items:center;gap:5px">
-        <div class="bar-bg" style="width:70px"><div class="bar-fill" style="width:${Math.min(pctT*5,100)}%;background:${PDV_COLORS[i]}"></div></div>
-        <span style="font-size:11px;color:var(--fg3)">${pctT.toFixed(1)}%</span></div></td></tr>`;
+      <td class="r"><div style="display:flex;align-items:center;gap:5px;justify-content:flex-end">
+        <div class="bar-bg" style="width:55px"><div class="bar-fill" style="width:${Math.min(pctT*5,100)}%;background:${PDV_COLORS[i]}"></div></div>
+        ${pctT.toFixed(1)}%</div></td>
+      <td><div style="display:flex;align-items:center;gap:4px">
+        <div class="bar-bg" style="width:80px"><div class="bar-fill" style="width:${pctT*5}%;background:${PDV_COLORS[i]}"></div></div></div></td></tr>`;
   }).join('');
+
+  // YTD por PDV
+  document.getElementById('t-ventas-ytd').innerHTML=PDV_ORDER.map((co,i)=>{
+    const vals=MESES.map(m=>vGet(m,co));
+    const ytd=vals.reduce((a,b)=>a+b,0),bestV=Math.max(...vals),bestM=MESES[vals.indexOf(bestV)];
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${vals.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'font-weight:700;color:var(--blue)':''}">${fmt(v)}</td>`).join('')}
+      <td class="r"><strong>${fmt(ytd)}</strong></td>
+      <td class="r"><span class="pill pg">${bestM.slice(0,3)} ${fmt(bestV)}</span></td></tr>`;
+  }).join('');
+  const colTots=MESES.map(m=>totV(m));
+  document.getElementById('t-ventas-ytd').innerHTML+=`<tr class="tot"><td>TOTAL</td>${colTots.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'color:var(--blue)':''}">${fmt(v)}</td>`).join('')}<td class="r">${fmt(ytdVtot)}</td><td class="r">—</td></tr>`;
+
   dc('ch-ventas-line');
   charts['ch-ventas-line']=new Chart(document.getElementById('ch-ventas-line'),{
     type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
@@ -510,6 +620,14 @@ function renderVentas(mes){
     options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
       scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
   });
+  dc('ch-ventas-cvsn');
+  charts['ch-ventas-cvsn']=new Chart(document.getElementById('ch-ventas-cvsn'),{
+    type:'bar',data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),datasets:[
+      {label:'Con Carnicería',data:PDV_ORDER.map(co=>+((DATA[mes].ventas[co]?.total||0)/1e6).toFixed(1)),backgroundColor:'rgba(91,110,245,.8)',borderRadius:5},
+      {label:'Sin Carnicería',data:PDV_ORDER.map(co=>+((DATA[mes].ventas[co]?.sin||0)/1e6).toFixed(1)),backgroundColor:'rgba(45,212,191,.7)',borderRadius:5}
+    ]},options:{plugins:{legend:{position:'top',labels:{color:'#8b93b8',font:{size:11},boxWidth:10}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
 }
 
 // ── COMPRAS ───────────────────────────────────────────────────────
@@ -517,24 +635,52 @@ function renderCompras(mes){
   curC=mes; activateTab('c-tabs',mes);
   document.getElementById('c-badge').textContent=mes;
   const tc=totC(mes),tv=totV(mes),pvMes=MESES[MESES.indexOf(mes)-1],tcp=pvMes?totC(pvMes):0;
+  const mg=wMg(mes),cogs=tv*(1-mg/100);
+  const ytdC=MESES.reduce((s,m)=>s+totC(m),0);
+  const maxPDV=PDV_ORDER.reduce((a,b)=>(DATA[mes].compras[a]||0)>(DATA[mes].compras[b]||0)?a:b);
   document.getElementById('c-kpis').innerHTML=`
-    <div class="kpi purple"><div class="kpi-label">Compras Totales</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">${pvMes?tChip(pct(tc,tcp))+' vs '+pvMes:'—'}</div></div>
-    <div class="kpi"><div class="kpi-label">Ratio C/V</div><div class="kpi-val">${(tc/tv*100).toFixed(1)}%</div><div class="kpi-sub">Ideal ≤80%</div></div>
-    <div class="kpi"><div class="kpi-label">Mayor Comprador</div><div class="kpi-val sm">${PDV_NAMES[PDV_ORDER.reduce((a,b)=>(DATA[mes].compras[a]||0)>(DATA[mes].compras[b]||0)?a:b)]}</div><div class="kpi-sub">${fmt(Math.max(...PDV_ORDER.map(co=>DATA[mes].compras[co]||0)))}</div></div>`;
+    <div class="kpi purple"><div class="kpi-label">Compras ${mes}</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">${pvMes?tChip(pct(tc,tcp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi ${tc/tv*100<80?'good':tc/tv*100<95?'warn':'bad'}"><div class="kpi-label">Ratio C/V</div><div class="kpi-val">${(tc/tv*100).toFixed(1)}%</div><div class="kpi-sub">Ideal ≤80%</div></div>
+    <div class="kpi"><div class="kpi-label">Compras YTD</div><div class="kpi-val sm">${fmt(ytdC)}</div><div class="kpi-sub">Abr–Sep acumulado</div></div>
+    <div class="kpi"><div class="kpi-label">Mayor Comprador</div><div class="kpi-val sm">${PDV_NAMES[maxPDV]}</div><div class="kpi-sub">${fmt(DATA[mes].compras[maxPDV]||0)}</div></div>`;
+
   document.getElementById('t-compras').innerHTML=PDV_ORDER.map((co,i)=>{
-    const c=DATA[mes].compras[co]||0,v=vGet(mes,co),r=v>0?c/v*100:0;
+    const c=DATA[mes].compras[co]||0,v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0;
+    const cogsP=v*(1-mg/100),r=v>0?c/v*100:0,rcogs=cogsP>0?c/cogsP*100:0;
     return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
       <td class="r">${fmt(c)}</td><td class="r">${fmt(v)}</td>
+      <td class="r">${fmt(cogsP)}</td>
       <td class="r"><span class="pill ${r<75?'pg':r<90?'py':'pr'}">${r.toFixed(1)}%</span></td>
+      <td class="r"><span class="pill ${rcogs<100?'pg':rcogs<115?'py':'pr'}">${rcogs.toFixed(1)}%</span></td>
       <td>${r<75?'✅ Eficiente':r<90?'⚠️ Normal':'🔴 Alto'}</td></tr>`;
   }).join('');
+
+  // Histórico compras
+  document.getElementById('t-compras-hist').innerHTML=PDV_ORDER.map((co,i)=>{
+    const vals=MESES.map(m=>DATA[m].compras[co]||0);
+    const tot=vals.reduce((a,b)=>a+b,0);
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${vals.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'font-weight:700;color:var(--purple)':''}">${fmt(v)}</td>`).join('')}
+      <td class="r"><strong>${fmt(tot)}</strong></td></tr>`;
+  }).join('');
+  const colTots=MESES.map(m=>totC(m));
+  document.getElementById('t-compras-hist').innerHTML+=`<tr class="tot"><td>TOTAL</td>${colTots.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'color:var(--purple)':''}">${fmt(v)}</td>`).join('')}<td class="r">${fmt(ytdC)}</td></tr>`;
+
   dc('ch-compras');
   charts['ch-compras']=new Chart(document.getElementById('ch-compras'),{
-    type:'bar',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
       label:PDV_NAMES[co],data:MESES.map(m=>+((DATA[m].compras[co]||0)/1e6).toFixed(1)),
-      backgroundColor:PDV_COLORS[i]+'bb',borderRadius:4}))},
-    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:10}}},
-      scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+      borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+  dc('ch-compras-ratio');
+  charts['ch-compras-ratio']=new Chart(document.getElementById('ch-compras-ratio'),{
+    type:'bar',data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),datasets:MESES.map((m,j)=>({
+      label:m,data:PDV_ORDER.map(co=>{const c=DATA[m].compras[co]||0,v=vGet(m,co);return v>0?+(c/v*100).toFixed(1):0;}),
+      backgroundColor:`hsl(${j*52},70%,55%)`,borderRadius:4}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:10},boxWidth:8,padding:6}}},
+      scales:{x:{ticks:{color:'#8b93b8',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`${v}%`},grid:{color:'rgba(255,255,255,.05)'},min:0,max:130}}}
   });
 }
 
@@ -544,31 +690,68 @@ function renderNomina(mes){
   document.getElementById('n-badge').textContent=mes;
   const tn=totN(mes),tv=totV(mes),pn=tn/tv*100,pvMes=MESES[MESES.indexOf(mes)-1],tnp=pvMes?totN(pvMes):0;
   const tot_emp=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].nomina[co]?.emp||0),0);
+  const tot_empP=pvMes?PDV_ORDER.reduce((s,co)=>s+(DATA[pvMes].nomina[co]?.emp||0),0):0;
+  const ytdN=MESES.reduce((s,m)=>s+totN(m),0);
   document.getElementById('n-kpis').innerHTML=`
-    <div class="kpi ${pn<8?'good':pn<12?'warn':'bad'}"><div class="kpi-label">Nómina Total</div><div class="kpi-val">${fmt(tn)}</div><div class="kpi-sub">${pvMes?tChip(pct(tn,tnp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi ${pn<8?'good':pn<12?'warn':'bad'}"><div class="kpi-label">Nómina ${mes}</div><div class="kpi-val">${fmt(tn)}</div><div class="kpi-sub">${pvMes?tChip(pct(tn,tnp))+' vs '+pvMes:'—'}</div></div>
     <div class="kpi ${pn<8?'good':pn<12?'warn':'bad'}"><div class="kpi-label">% Nóm / Ventas</div><div class="kpi-val">${pn.toFixed(1)}%</div><div class="kpi-sub">${pn<8?'🟢 Óptimo':pn<12?'🟡 Atención':'🔴 Crítico'}</div></div>
-    <div class="kpi"><div class="kpi-label">Empleados</div><div class="kpi-val">${tot_emp}</div><div class="kpi-sub">Toda la red</div></div>`;
+    <div class="kpi"><div class="kpi-label">Empleados</div><div class="kpi-val">${tot_emp}</div><div class="kpi-sub">${pvMes?tChip(pct(tot_emp,tot_empP))+' vs '+pvMes:'Toda la red'}</div></div>
+    <div class="kpi"><div class="kpi-label">Nómina YTD</div><div class="kpi-val sm">${fmt(ytdN)}</div><div class="kpi-sub">${(ytdN/MESES.reduce((s,m)=>s+totV(m),0)*100).toFixed(1)}% de ventas YTD</div></div>`;
+
   document.getElementById('t-nomina').innerHTML=PDV_ORDER.map((co,i)=>{
     const n=DATA[mes].nomina[co];if(!n)return'';
-    const v=vGet(mes,co),pn=v>0?n.dev/v*100:0,vpe=n.emp>0?v/n.emp:0;
+    const v=vGet(mes,co),pn=v>0?n.dev/v*100:0,vpe=n.emp>0?v/n.emp:0,dpe=n.emp>0?n.dev/n.emp:0;
     const cl=pn<8?'g':pn<12?'y':'r';
     return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
       <td class="r">${fmt(n.dev)}</td><td class="r">${fmt(v)}</td>
-      <td class="r"><div style="display:flex;justify-content:flex-end"><div class="circ ${cl}">${pn.toFixed(1)}%</div></div></td>
+      <td class="r"><div style="display:flex;justify-content:flex-end;align-items:center;gap:6px"><div class="circ ${cl}" style="width:42px;height:42px;font-size:11px">${pn.toFixed(1)}%</div></div></td>
       <td class="r">${n.emp}</td><td class="r">${fmt(vpe)}</td>
-      <td><span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">${pn<8?'Verde':pn<12?'Amarillo':'Rojo'}</span></td></tr>`;
+      <td class="r">${fmt(dpe)}</td>
+      <td><span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">${pn<8?'🟢 Verde':pn<12?'🟡 Amarillo':'🔴 Rojo'}</span></td></tr>`;
   }).join('');
+
+  // Matriz semáforo PDV × Mes
+  const semHdr=`<thead><tr><th>PDV</th>${MESES.map(m=>`<th class="r">${m.slice(0,3)}</th>`).join('')}</tr></thead>`;
+  const semRows=PDV_ORDER.map((co,i)=>{
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${MESES.map(m=>{
+        const n=DATA[m].nomina[co],v=vGet(m,co),pn=n&&v>0?n.dev/v*100:0;
+        const bg=pn<8?'rgba(74,222,128,.15)':pn<12?'rgba(251,191,36,.15)':'rgba(248,113,113,.15)';
+        const cl=pn<8?'var(--green)':pn<12?'var(--yellow)':'var(--red)';
+        return`<td class="r" style="background:${bg};color:${cl};font-weight:700">${pn.toFixed(1)}%</td>`;
+      }).join('')}</tr>`;
+  }).join('');
+  document.getElementById('t-semaforo-matrix').innerHTML=semHdr+`<tbody>${semRows}</tbody>`;
+
+  // Histórico devengo
+  document.getElementById('t-nom-hist').innerHTML=PDV_ORDER.map((co,i)=>{
+    const vals=MESES.map(m=>DATA[m].nomina[co]?.dev||0);
+    const tot=vals.reduce((a,b)=>a+b,0);
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${vals.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'font-weight:700;color:var(--green)':''}">${fmt(v)}</td>`).join('')}
+      <td class="r"><strong>${fmt(tot)}</strong></td></tr>`;
+  }).join('');
+  document.getElementById('t-nom-hist').innerHTML+=`<tr class="tot"><td>TOTAL</td>${MESES.map((m,j)=>`<td class="r" style="${m===mes?'color:var(--green)':''}">${fmt(totN(m))}</td>`).join('')}<td class="r">${fmt(ytdN)}</td></tr>`;
+
   dc('ch-nomina');
   charts['ch-nomina']=new Chart(document.getElementById('ch-nomina'),{
-    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>{
-      const n=DATA[MESES[0]].nomina[co];if(!n)return null;
-      return{label:PDV_NAMES[co],data:MESES.map(m=>{const n=DATA[m].nomina[co],v=vGet(m,co);return v>0?+((n?.dev||0)/v*100).toFixed(2):0;}),
-        borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3};
-    }).filter(Boolean)},
-    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
+      label:PDV_NAMES[co],data:MESES.map(m=>{const n=DATA[m].nomina[co],v=vGet(m,co);return v>0?+((n?.dev||0)/v*100).toFixed(2):0;}),
+      borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}},
+      annotation:{annotations:{l8:{type:'line',yMin:8,yMax:8,borderColor:'rgba(251,191,36,.5)',borderWidth:1,borderDash:[4,4]},
+        l12:{type:'line',yMin:12,yMax:12,borderColor:'rgba(248,113,113,.5)',borderWidth:1,borderDash:[4,4]}}}},
       scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},
-        y:{ticks:{color:'#8b93b8',callback:v=>`${v}%`},grid:{color:'rgba(255,255,255,.05)'},
-          min:0,max:15}}}
+        y:{ticks:{color:'#8b93b8',callback:v=>`${v}%`},grid:{color:'rgba(255,255,255,.05)'},min:0,max:16}}}
+  });
+  dc('ch-nom-vpe');
+  charts['ch-nom-vpe']=new Chart(document.getElementById('ch-nom-vpe'),{
+    type:'bar',data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),
+      datasets:[{label:'Vtas/Empleado',data:PDV_ORDER.map(co=>{const n=DATA[mes].nomina[co],v=vGet(mes,co);return n?.emp>0?+(v/n.emp/1e6).toFixed(2):0;}),
+        backgroundColor:PDV_COLORS,borderRadius:6}]},
+    options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`$${(c.raw*1e6/1e6).toFixed(2)}M`}}},
+      scales:{x:{ticks:{color:'#8b93b8',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
   });
 }
 
@@ -578,24 +761,56 @@ function renderInv(mes){
   document.getElementById('i-badge').textContent=mes;
   const ti=totI(mes),tv=totV(mes),mg=wMg(mes),cogs=tv*(1-mg/100),dias=cogs>0?Math.round(ti/cogs*30):0;
   const skus=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].inv[co]?.skus||0),0);
+  const units=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].inv[co]?.units||0),0);
+  const pvMes=MESES[MESES.indexOf(mes)-1],tip=pvMes?totI(pvMes):0;
   document.getElementById('i-kpis').innerHTML=`
-    <div class="kpi purple"><div class="kpi-label">Valorización</div><div class="kpi-val">${fmt(ti)}</div><div class="kpi-sub">Total en bodega</div></div>
-    <div class="kpi ${dias<45?'good':dias<65?'warn':'bad'}"><div class="kpi-label">Días Inv. Prom.</div><div class="kpi-val">${dias}</div><div class="kpi-sub">${dias<45?'Ágil':dias<65?'Normal':'Exceso'}</div></div>
-    <div class="kpi blue"><div class="kpi-label">SKUs</div><div class="kpi-val">${skus.toLocaleString('es-CO')}</div><div class="kpi-sub">Productos activos</div></div>
-    <div class="kpi"><div class="kpi-label">Inv / Ventas</div><div class="kpi-val">${(ti/tv*100).toFixed(1)}%</div><div class="kpi-sub">Ratio cobertura</div></div>`;
+    <div class="kpi purple"><div class="kpi-label">Valorización</div><div class="kpi-val">${fmt(ti)}</div><div class="kpi-sub">${pvMes?tChip(pct(ti,tip))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi ${dias<45?'good':dias<65?'warn':'bad'}"><div class="kpi-label">Días Inv. Prom.</div><div class="kpi-val">${dias}</div><div class="kpi-sub">${dias<45?'🟢 Ágil':dias<65?'🟡 Normal':'🔴 Exceso'}</div></div>
+    <div class="kpi blue"><div class="kpi-label">SKUs Activos</div><div class="kpi-val">${skus.toLocaleString('es-CO')}</div><div class="kpi-sub">${units.toLocaleString('es-CO')} unidades</div></div>
+    <div class="kpi"><div class="kpi-label">Inv / Ventas</div><div class="kpi-val">${(ti/tv*100).toFixed(1)}%</div><div class="kpi-sub">Rotación ${dias>0?(365/dias).toFixed(1):0}x anual</div></div>`;
+
   document.getElementById('t-inv').innerHTML=PDV_ORDER.map((co,i)=>{
     const inv=DATA[mes].inv[co];if(!inv)return'';
-    const v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0,cogs=v*(1-mg/100);
-    const dias=cogs>0?Math.round(inv.val/cogs*30):0,rot=dias>0?+(365/dias).toFixed(1):0;
+    const v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0,cogsP=v*(1-mg/100);
+    const dias=cogsP>0?Math.round(inv.val/cogsP*30):0,rot=dias>0?+(365/dias).toFixed(1):0;
     const pctP=ti>0?inv.val/ti*100:0;
     return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
       <td class="r">${fmt(inv.val)}</td>
+      <td class="r">${inv.units.toLocaleString('es-CO')}</td>
+      <td class="r">${inv.skus.toLocaleString('es-CO')}</td>
       <td class="r"><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
-        <div class="bar-bg" style="width:44px"><div class="bar-fill" style="width:${Math.min(pctP*5,100)}%;background:${PDV_COLORS[i]}"></div></div>${pctP.toFixed(1)}%</div></td>
+        <div class="bar-bg" style="width:40px"><div class="bar-fill" style="width:${Math.min(pctP*5,100)}%;background:${PDV_COLORS[i]}"></div></div>${pctP.toFixed(1)}%</div></td>
+      <td class="r">${fmt(cogsP)}</td>
       <td class="r"><span class="pill ${dias<45?'pg':dias<65?'py':'pr'}">${dias}d</span></td>
-      <td class="r">${rot}x</td><td class="r">${inv.skus.toLocaleString('es-CO')}</td>
+      <td class="r">${rot}x</td>
       <td>${dias<45?'✅ Ágil':dias<65?'⚠️ Normal':'🔴 Exceso'}</td></tr>`;
   }).join('');
+
+  // Matriz días inventario PDV × Mes
+  const diasHdr=`<thead><tr><th>PDV</th>${MESES.map(m=>`<th class="r">${m.slice(0,3)}</th>`).join('')}</tr></thead>`;
+  const diasRows=PDV_ORDER.map((co,i)=>{
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${MESES.map(m=>{
+        const inv=DATA[m].inv[co],v=vGet(m,co),mg=DATA[m].ventas[co]?.margin||0,cogsP=v*(1-mg/100);
+        const d=inv&&cogsP>0?Math.round(inv.val/cogsP*30):0;
+        const bg=d<45?'rgba(74,222,128,.12)':d<65?'rgba(251,191,36,.12)':'rgba(248,113,113,.12)';
+        const cl=d<45?'var(--green)':d<65?'var(--yellow)':'var(--red)';
+        return`<td class="r" style="background:${bg};color:${cl};font-weight:700">${d}d</td>`;
+      }).join('')}</tr>`;
+  }).join('');
+  document.getElementById('t-dias-matrix').innerHTML=diasHdr+`<tbody>${diasRows}</tbody>`;
+
+  // Histórico valorización
+  document.getElementById('t-inv-hist').innerHTML=PDV_ORDER.map((co,i)=>{
+    const vals=MESES.map(m=>DATA[m].inv[co]?.val||0);
+    const v0=vals[0],vN=vals[vals.length-1],delta=v0>0?pct(vN,v0):0;
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      ${vals.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'font-weight:700;color:var(--purple)':''}">${fmt(v)}</td>`).join('')}
+      <td class="r">${tChip(delta)}</td></tr>`;
+  }).join('');
+  const colTots=MESES.map(m=>totI(m));
+  document.getElementById('t-inv-hist').innerHTML+=`<tr class="tot"><td>TOTAL</td>${colTots.map((v,j)=>`<td class="r" style="${MESES[j]===mes?'color:var(--purple)':''}">${fmt(v)}</td>`).join('')}<td class="r">${tChip(pct(colTots[colTots.length-1],colTots[0]))}</td></tr>`;
+
   dc('ch-inv');
   charts['ch-inv']=new Chart(document.getElementById('ch-inv'),{
     type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
@@ -603,6 +818,21 @@ function renderInv(mes){
       borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3}))},
     options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
       scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+  dc('ch-inv-dias');
+  charts['ch-inv-dias']=new Chart(document.getElementById('ch-inv-dias'),{
+    type:'bar',data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),datasets:[{
+      label:'Días Inventario',data:PDV_ORDER.map(co=>{
+        const inv=DATA[mes].inv[co],v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0,c=v*(1-mg/100);
+        return inv&&c>0?Math.round(inv.val/c*30):0;}),
+      backgroundColor:PDV_ORDER.map(co=>{
+        const inv=DATA[mes].inv[co],v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0,c=v*(1-mg/100);
+        const d=inv&&c>0?Math.round(inv.val/c*30):0;
+        return d<45?'rgba(74,222,128,.8)':d<65?'rgba(251,191,36,.8)':'rgba(248,113,113,.8)';}),
+      borderRadius:6}]},
+    options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} días`}}},
+      scales:{x:{ticks:{color:'#8b93b8',font:{size:10}},grid:{display:false}},
+        y:{ticks:{color:'#8b93b8',callback:v=>`${v}d`},grid:{color:'rgba(255,255,255,.05)'}}}}
   });
 }
 
