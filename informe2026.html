@@ -1,0 +1,776 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Informe Ejecutivo Ibáñez 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#0f1117;--bg2:#161922;--bg3:#1e2333;--border:rgba(255,255,255,.07);
+  --fg:#e8eaf6;--fg2:#8b93b8;--fg3:#4a5070;
+  --green:#4ade80;--yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;--purple:#a78bfa;--teal:#2dd4bf;--orange:#fb923c;
+  --accent:#5b6ef5;color-scheme:dark;
+}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f0f2fa;--bg2:#fff;--bg3:#e8eaff;--border:rgba(0,0,0,.08);
+  --fg:#1a1e36;--fg2:#4a5278;--fg3:#9099be;color-scheme:light;
+}}
+:root[data-theme="light"]{--bg:#f0f2fa;--bg2:#fff;--bg3:#e8eaff;--border:rgba(0,0,0,.08);--fg:#1a1e36;--fg2:#4a5278;--fg3:#9099be;color-scheme:light;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.6;}
+.layout{display:flex;min-height:100vh;}
+/* SIDEBAR */
+.sidebar{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.logo{padding:0 18px 18px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.logo-t{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.logo-s{font-size:11px;color:var(--fg2);margin-top:2px;}
+.nav-group{padding:0 10px;margin-bottom:6px;}
+.nav-label{font-size:10px;font-weight:700;color:var(--fg3);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px 5px;}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;color:var(--fg2);font-size:13px;font-weight:500;border:none;background:none;width:100%;text-align:left;transition:background .12s,color .12s;}
+.nav-item:hover{background:var(--bg3);color:var(--fg);}
+.nav-item.active{background:var(--accent);color:#fff;}
+.nav-icon{font-size:15px;width:18px;text-align:center;}
+/* TOGGLE CON/SIN */
+.carnic-toggle{margin:14px 10px 0;border-top:1px solid var(--border);padding-top:14px;}
+.carnic-label{font-size:10px;font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:.07em;padding:0 8px 6px;}
+.tog-row{display:flex;background:var(--bg3);border-radius:8px;padding:3px;gap:2px;}
+.tog-btn{flex:1;padding:5px 4px;border-radius:6px;border:none;background:none;font-size:11px;font-weight:600;color:var(--fg2);cursor:pointer;transition:all .15s;text-align:center;}
+.tog-btn.active{background:var(--accent);color:#fff;}
+/* MAIN */
+.main{flex:1;padding:26px 30px;min-width:0;}
+.section{display:none;}
+.section.active{display:block;}
+.page-header{margin-bottom:24px;}
+.page-title{font-size:21px;font-weight:800;}
+.page-sub{font-size:12px;color:var(--fg2);margin-top:3px;}
+/* KPI ROW */
+.kpi-row{display:grid;gap:12px;margin-bottom:20px;}
+.kpi-4{grid-template-columns:repeat(4,1fr);}
+.kpi-3{grid-template-columns:repeat(3,1fr);}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:14px 16px;}
+.kpi-label{font-size:11px;font-weight:600;color:var(--fg2);text-transform:uppercase;letter-spacing:.04em;}
+.kpi-val{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;margin:4px 0 2px;line-height:1.2;}
+.kpi-val.sm{font-size:16px;}
+.kpi-sub{font-size:11px;color:var(--fg3);}
+.kpi.good .kpi-val{color:var(--green);}
+.kpi.warn .kpi-val{color:var(--yellow);}
+.kpi.bad .kpi-val{color:var(--red);}
+.kpi.blue .kpi-val{color:var(--blue);}
+.kpi.purple .kpi-val{color:var(--purple);}
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:11px;padding:18px 20px;margin-bottom:16px;}
+.card-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.badge{font-size:10px;font-weight:600;background:var(--bg3);border-radius:5px;padding:2px 7px;color:var(--fg2);}
+/* TABLE */
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+thead th{text-align:left;padding:6px 10px;color:var(--fg3);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);}
+th.r,td.r{text-align:right;}
+tbody td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:var(--bg3);}
+tr.tot td{background:var(--bg3);font-weight:700;}
+/* PILL */
+.pill{display:inline-block;border-radius:5px;font-size:11px;font-weight:600;padding:2px 7px;white-space:nowrap;}
+.pg{background:rgba(74,222,128,.15);color:var(--green);}
+.py{background:rgba(251,191,36,.15);color:var(--yellow);}
+.pr{background:rgba(248,113,113,.15);color:var(--red);}
+.pb{background:rgba(96,165,250,.15);color:var(--blue);}
+.pp{background:rgba(167,139,250,.15);color:var(--purple);}
+/* DOT / BAR */
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;flex-shrink:0;}
+.bar-bg{background:var(--bg3);border-radius:3px;height:6px;overflow:hidden;display:inline-block;vertical-align:middle;}
+.bar-fill{height:100%;border-radius:3px;}
+/* MES TABS */
+.mes-tabs{display:flex;gap:5px;margin-bottom:20px;flex-wrap:wrap;}
+.mes-tab{padding:5px 13px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg2);color:var(--fg2);cursor:pointer;transition:all .12s;}
+.mes-tab:hover{background:var(--bg3);color:var(--fg);}
+.mes-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+/* TREND */
+.up{color:var(--green);font-weight:600;font-size:11px;}
+.dn{color:var(--red);font-weight:600;font-size:11px;}
+.flat{color:var(--fg3);font-weight:600;font-size:11px;}
+/* CIRCLE SEMAFORO */
+.circ{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;border:2px solid;}
+.circ.g{background:rgba(74,222,128,.1);border-color:var(--green);color:var(--green);}
+.circ.y{background:rgba(251,191,36,.1);border-color:var(--yellow);color:var(--yellow);}
+.circ.r{background:rgba(248,113,113,.1);border-color:var(--red);color:var(--red);}
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+/* COMPARE */
+.cmp-selectors{display:flex;gap:12px;align-items:center;margin-bottom:22px;flex-wrap:wrap;}
+.cmp-sel{display:flex;flex-direction:column;gap:5px;}
+.cmp-sel label{font-size:11px;font-weight:700;color:var(--fg2);text-transform:uppercase;letter-spacing:.05em;}
+.cmp-sel select{padding:7px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--fg);font-size:13px;font-weight:600;cursor:pointer;}
+.vs-badge{font-size:18px;font-weight:900;color:var(--fg3);margin-top:18px;}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.cmp-header{text-align:center;padding:10px;border-radius:9px;font-weight:800;font-size:15px;margin-bottom:10px;}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;padding:10px;border-right:none;border-bottom:1px solid var(--border);}
+  .logo,.carnic-toggle,.nav-label{display:none;}
+  .nav-group{padding:0;}
+  .nav-item{padding:6px 9px;font-size:12px;}
+  .main{padding:14px;}
+  .kpi-4,.kpi-3{grid-template-columns:1fr 1fr;}
+  .g2,.g3,.cmp-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<!-- SPLASH SCREEN -->
+<style>
+#splash{position:fixed;inset:0;z-index:9999;background:#0f1117;display:flex;align-items:center;justify-content:center;font-family:'Inter',system-ui,sans-serif;}
+.splash-box{text-align:center;max-width:480px;padding:40px 24px;}
+.splash-logo{font-size:48px;margin-bottom:8px;}
+.splash-title{font-size:26px;font-weight:800;color:#e8eaf6;margin-bottom:6px;}
+.splash-sub{font-size:14px;color:#8b93b8;margin-bottom:36px;line-height:1.5;}
+.splash-cards{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.splash-card{width:180px;padding:22px 16px;border-radius:14px;border:2px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);cursor:pointer;transition:all .18s;text-align:center;}
+.splash-card:hover{border-color:#5b6ef5;background:rgba(91,110,245,.12);transform:translateY(-3px);}
+.splash-card-icon{font-size:38px;margin-bottom:10px;}
+.splash-card-name{font-size:15px;font-weight:700;color:#e8eaf6;margin-bottom:4px;}
+.splash-card-desc{font-size:11px;color:#8b93b8;line-height:1.4;}
+.splash-detect{margin-top:22px;font-size:11px;color:#4a5070;}
+.splash-detect b{color:#5b6ef5;cursor:pointer;text-decoration:underline;}
+/* Mobile mode overrides */
+body.mobile-mode .sidebar{display:none!important;}
+body.mobile-mode .main{padding:12px;}
+body.mobile-mode .kpi-4{grid-template-columns:1fr 1fr;}
+body.mobile-mode .kpi-3{grid-template-columns:1fr 1fr;}
+body.mobile-mode .g2,.mobile-mode .g3,.mobile-mode .cmp-grid{grid-template-columns:1fr;}
+body.mobile-mode .mobile-nav{display:flex!important;}
+/* Mobile bottom nav */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:#161922;border-top:1px solid rgba(255,255,255,.08);padding:6px 4px;gap:2px;overflow-x:auto;}
+.mobile-nav-btn{flex:1;min-width:52px;padding:5px 4px;border:none;background:none;color:#8b93b8;font-size:9px;font-weight:600;cursor:pointer;border-radius:7px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .12s;}
+.mobile-nav-btn .mn-icon{font-size:18px;}
+.mobile-nav-btn.active,.mobile-nav-btn:hover{color:#5b6ef5;}
+body.mobile-mode .main{padding-bottom:72px;}
+</style>
+
+<div id="splash">
+  <div class="splash-box">
+    <div class="splash-logo">🛒</div>
+    <div class="splash-title">Los Ibáñez</div>
+    <div class="splash-sub">Informe Ejecutivo 2026<br>¿Desde qué dispositivo estás abriendo el informe?</div>
+    <div class="splash-cards">
+      <div class="splash-card" onclick="chooseDev('desktop')">
+        <div class="splash-card-icon">💻</div>
+        <div class="splash-card-name">Computador</div>
+        <div class="splash-card-desc">Vista completa con menú lateral y tablas expandidas</div>
+      </div>
+      <div class="splash-card" onclick="chooseDev('mobile')">
+        <div class="splash-card-icon">📱</div>
+        <div class="splash-card-name">Celular</div>
+        <div class="splash-card-desc">Vista optimizada con barra inferior y tarjetas compactas</div>
+      </div>
+    </div>
+    <div class="splash-detect" id="splash-hint"></div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" id="mob-nav">
+  <button class="mobile-nav-btn active" onclick="nav('resumen',this)"><span class="mn-icon">📊</span>Resumen</button>
+  <button class="mobile-nav-btn" onclick="nav('ventas',this)"><span class="mn-icon">💰</span>Ventas</button>
+  <button class="mobile-nav-btn" onclick="nav('compras',this)"><span class="mn-icon">🛒</span>Compras</button>
+  <button class="mobile-nav-btn" onclick="nav('nomina',this)"><span class="mn-icon">👥</span>Nómina</button>
+  <button class="mobile-nav-btn" onclick="nav('inventario',this)"><span class="mn-icon">📦</span>Inv.</button>
+  <button class="mobile-nav-btn" onclick="nav('comparar',this)"><span class="mn-icon">⚖️</span>Comparar</button>
+  <button class="mobile-nav-btn" onclick="nav('alertas',this)"><span class="mn-icon">🚨</span>Alertas</button>
+</nav>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-t">🛒 Los Ibáñez</div>
+    <div class="logo-s">Informe Ejecutivo 2026</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">General</div>
+    <button class="nav-item active" onclick="nav('resumen',this)"><span class="nav-icon">📊</span>Resumen</button>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">Análisis</div>
+    <button class="nav-item" onclick="nav('ventas',this)"><span class="nav-icon">💰</span>Ventas</button>
+    <button class="nav-item" onclick="nav('compras',this)"><span class="nav-icon">🛒</span>Compras</button>
+    <button class="nav-item" onclick="nav('nomina',this)"><span class="nav-icon">👥</span>Nómina</button>
+    <button class="nav-item" onclick="nav('inventario',this)"><span class="nav-icon">📦</span>Inventario</button>
+  </div>
+  <div class="nav-group">
+    <div class="nav-label">Vistas</div>
+    <button class="nav-item" onclick="nav('comparar',this)"><span class="nav-icon">⚖️</span>Comparar Meses</button>
+    <button class="nav-item" onclick="nav('pdv',this)"><span class="nav-icon">🏪</span>Por PDV</button>
+    <button class="nav-item" onclick="nav('alertas',this)"><span class="nav-icon">🚨</span>Alertas</button>
+  </div>
+  <div class="carnic-toggle">
+    <div class="carnic-label">Modo ventas</div>
+    <div class="tog-row">
+      <button class="tog-btn active" id="tog-con" onclick="setMode('con')">Con Cárn.</button>
+      <button class="tog-btn" id="tog-sin" onclick="setMode('sin')">Sin Cárn.</button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- RESUMEN -->
+<div id="sec-resumen" class="section active">
+  <div class="page-header">
+    <div class="page-title">📊 Resumen Ejecutivo — Supermercados Los Ibáñez</div>
+    <div class="page-sub">Período: Abril – Septiembre 2026 · 8 Puntos de Venta</div>
+  </div>
+  <div id="r-kpis" class="kpi-row kpi-4"></div>
+  <div class="g2">
+    <div class="card"><div class="card-title">📈 Evolución Ventas Mensuales</div>
+      <div style="height:210px"><canvas id="ch-resumen-bar"></canvas></div></div>
+    <div class="card"><div class="card-title">🥧 Participación Sep. por PDV</div>
+      <div style="height:210px"><canvas id="ch-resumen-pie"></canvas></div></div>
+  </div>
+  <div class="card"><div class="card-title">📋 Consolidado Abril – Septiembre</div>
+    <div class="tw"><table>
+      <thead><tr><th>Mes</th><th class="r">Ventas</th><th class="r">Compras</th><th class="r">Nómina</th><th class="r">Nóm%</th><th class="r">Inventario</th><th class="r">Margen</th></tr></thead>
+      <tbody id="t-resumen"></tbody>
+    </table></div></div>
+</div>
+
+<!-- VENTAS -->
+<div id="sec-ventas" class="section">
+  <div class="page-header"><div class="page-title">💰 Ventas</div><div class="page-sub">Por Punto de Venta</div></div>
+  <div class="mes-tabs" id="v-tabs"></div>
+  <div id="v-kpis" class="kpi-row kpi-3"></div>
+  <div class="card"><div class="card-title">Ranking PDV <span class="badge" id="v-badge"></span></div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Ventas</th><th class="r">Margen</th><th class="r">vs Mes Ant.</th><th>Part.</th></tr></thead>
+      <tbody id="t-ventas"></tbody>
+    </table></div></div>
+  <div class="card"><div class="card-title">📈 Tendencia Ventas por PDV</div>
+    <div style="height:250px"><canvas id="ch-ventas-line"></canvas></div></div>
+</div>
+
+<!-- COMPRAS -->
+<div id="sec-compras" class="section">
+  <div class="page-header"><div class="page-title">🛒 Compras</div><div class="page-sub">Abastecimiento y relación con ventas</div></div>
+  <div class="mes-tabs" id="c-tabs"></div>
+  <div id="c-kpis" class="kpi-row kpi-3"></div>
+  <div class="card"><div class="card-title">Compras vs Ventas <span class="badge" id="c-badge"></span></div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Compras</th><th class="r">Ventas</th><th class="r">Ratio C/V</th><th>Evaluación</th></tr></thead>
+      <tbody id="t-compras"></tbody>
+    </table></div></div>
+  <div class="card"><div class="card-title">📈 Evolución Compras</div>
+    <div style="height:250px"><canvas id="ch-compras"></canvas></div></div>
+</div>
+
+<!-- NÓMINA -->
+<div id="sec-nomina" class="section">
+  <div class="page-header"><div class="page-title">👥 Nómina</div><div class="page-sub">Semáforo: &lt;8% 🟢 · 8-12% 🟡 · &gt;12% 🔴</div></div>
+  <div class="mes-tabs" id="n-tabs"></div>
+  <div id="n-kpis" class="kpi-row kpi-3"></div>
+  <div class="card"><div class="card-title">🚦 Semáforo por PDV <span class="badge" id="n-badge"></span></div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Devengo</th><th class="r">Ventas</th><th class="r">% Nóm</th><th class="r">Empl.</th><th class="r">Vtas/Empl.</th><th>Estado</th></tr></thead>
+      <tbody id="t-nomina"></tbody>
+    </table></div></div>
+  <div class="card"><div class="card-title">📈 Evolución % Nómina/Ventas</div>
+    <div style="height:230px"><canvas id="ch-nomina"></canvas></div></div>
+</div>
+
+<!-- INVENTARIO -->
+<div id="sec-inventario" class="section">
+  <div class="page-header"><div class="page-title">📦 Inventario</div><div class="page-sub">Valorización, cobertura y rotación</div></div>
+  <div class="mes-tabs" id="i-tabs"></div>
+  <div id="i-kpis" class="kpi-row kpi-4"></div>
+  <div class="card"><div class="card-title">💰 Inventario × Operaciones <span class="badge" id="i-badge"></span></div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r">Valorización</th><th class="r">% Part.</th><th class="r">Días Inv.</th><th class="r">Rot. Anual</th><th class="r">SKUs</th><th>Cobertura</th></tr></thead>
+      <tbody id="t-inv"></tbody>
+    </table></div></div>
+  <div class="card"><div class="card-title">📈 Evolución Valorización</div>
+    <div style="height:250px"><canvas id="ch-inv"></canvas></div></div>
+</div>
+
+<!-- COMPARAR -->
+<div id="sec-comparar" class="section">
+  <div class="page-header"><div class="page-title">⚖️ Comparar Meses</div><div class="page-sub">Selecciona dos meses para comparar indicadores</div></div>
+  <div class="cmp-selectors">
+    <div class="cmp-sel"><label>Mes A</label>
+      <select id="cmp-a" onchange="renderComparar()">
+        <option value="Agosto">Agosto</option>
+        <option value="Julio">Julio</option>
+        <option value="Junio">Junio</option>
+        <option value="Mayo">Mayo</option>
+        <option value="Abril">Abril</option>
+        <option value="Septiembre">Septiembre</option>
+      </select></div>
+    <div class="vs-badge">VS</div>
+    <div class="cmp-sel"><label>Mes B</label>
+      <select id="cmp-b" onchange="renderComparar()">
+        <option value="Septiembre">Septiembre</option>
+        <option value="Agosto">Agosto</option>
+        <option value="Julio">Julio</option>
+        <option value="Junio">Junio</option>
+        <option value="Mayo">Mayo</option>
+        <option value="Abril">Abril</option>
+      </select></div>
+  </div>
+  <div id="cmp-kpis" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px"></div>
+  <div class="card"><div class="card-title">📊 Ventas por PDV — Comparativa</div>
+    <div style="height:260px"><canvas id="ch-cmp-bar"></canvas></div></div>
+  <div class="card"><div class="card-title">📋 Tabla Comparativa Detallada</div>
+    <div class="tw"><table>
+      <thead><tr><th>PDV</th><th class="r" id="cmp-h-a"></th><th class="r" id="cmp-h-b"></th><th class="r">Δ Ventas</th><th class="r">Δ Nóm%</th><th class="r">Δ Inv.</th></tr></thead>
+      <tbody id="t-cmp"></tbody>
+    </table></div></div>
+</div>
+
+<!-- PDV -->
+<div id="sec-pdv" class="section">
+  <div class="page-header"><div class="page-title">🏪 Scorecard por PDV</div><div class="page-sub" id="pdv-sub"></div></div>
+  <div class="mes-tabs" id="pdv-tabs"></div>
+  <div id="pdv-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px"></div>
+</div>
+
+<!-- ALERTAS -->
+<div id="sec-alertas" class="section">
+  <div class="page-header"><div class="page-title">🚨 Alertas</div><div class="page-sub">Indicadores que requieren atención</div></div>
+  <div class="mes-tabs" id="a-tabs"></div>
+  <div id="alertas-body"></div>
+</div>
+
+</main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ── DATA (exactos del generador) ─────────────────────────────────
+const MESES=['Abril','Mayo','Junio','Julio','Agosto','Septiembre'];
+const PDV_NAMES={'001':'Ortiz','002':'Carepa','003':'Obrero','004':'Nueva Colonia','005':'Chigorodo','006':'Terminal','007':'Lopez','008':'Turbo'};
+const PDV_ORDER=['001','002','003','004','005','006','007','008'];
+const PDV_COLORS=['#5b6ef5','#4ade80','#f87171','#fbbf24','#a78bfa','#2dd4bf','#fb923c','#60a5fa'];
+
+const DATA={
+  Abril:{
+    ventas:{'001':{total:1458.7e6,sin:1269.1e6,margin:20.73},'002':{total:917.6e6,sin:849.6e6,margin:19.53},'003':{total:458.7e6,sin:389.8e6,margin:19.99},'004':{total:283.6e6,sin:238.2e6,margin:20.6},'005':{total:855.0e6,sin:746.6e6,margin:19.97},'006':{total:515.7e6,sin:515.1e6,margin:19.26},'007':{total:675.9e6,sin:619.1e6,margin:19.42},'008':{total:438.7e6,sin:373.1e6,margin:19.72}},
+    compras:{'001':1345.8e6,'002':792.3e6,'003':365.8e6,'004':242.7e6,'005':766.0e6,'006':417.2e6,'007':535.6e6,'008':355.3e6},
+    nomina:{'001':{dev:113.4e6,emp:48},'002':{dev:42.4e6,emp:17},'003':{dev:22.2e6,emp:9},'004':{dev:18.0e6,emp:7},'005':{dev:39.2e6,emp:17},'006':{dev:21.5e6,emp:9},'007':{dev:26.7e6,emp:12},'008':{dev:28.0e6,emp:11}},
+    inv:{'001':{val:1691.3e6,units:516568,skus:8053},'002':{val:1080.9e6,units:421533,skus:5860},'003':{val:479.6e6,units:138608,skus:4624},'004':{val:410.9e6,units:160067,skus:4000},'005':{val:864.9e6,units:234577,skus:5232},'006':{val:605.1e6,units:176821,skus:4915},'007':{val:720.4e6,units:228596,skus:5153},'008':{val:658.5e6,units:195868,skus:5522}}
+  },
+  Mayo:{
+    ventas:{'001':{total:1598.1e6,sin:1388.4e6,margin:21.19},'002':{total:1027.8e6,sin:909.0e6,margin:19.12},'003':{total:486.6e6,sin:417.7e6,margin:19.68},'004':{total:296.1e6,sin:243.5e6,margin:20.78},'005':{total:918.6e6,sin:794.1e6,margin:20.2},'006':{total:576.1e6,sin:575.1e6,margin:19.2},'007':{total:748.7e6,sin:682.8e6,margin:19.46},'008':{total:461.3e6,sin:394.6e6,margin:19.55}},
+    compras:{'001':1349.6e6,'002':801.9e6,'003':391.5e6,'004':238.2e6,'005':675.9e6,'006':489.1e6,'007':637.4e6,'008':361.5e6},
+    nomina:{'001':{dev:109.5e6,emp:46},'002':{dev:47.7e6,emp:17},'003':{dev:23.0e6,emp:9},'004':{dev:18.4e6,emp:7},'005':{dev:42.7e6,emp:17},'006':{dev:23.7e6,emp:10},'007':{dev:26.6e6,emp:11},'008':{dev:28.2e6,emp:11}},
+    inv:{'001':{val:1737.0e6,units:538385,skus:8170},'002':{val:1161.0e6,units:431228,skus:5852},'003':{val:488.1e6,units:134911,skus:4647},'004':{val:440.1e6,units:167833,skus:4018},'005':{val:822.9e6,units:214529,skus:5223},'006':{val:628.1e6,units:181526,skus:4988},'007':{val:767.5e6,units:257097,skus:5323},'008':{val:674.7e6,units:203842,skus:5542}}
+  },
+  Junio:{
+    ventas:{'001':{total:1408.8e6,sin:1217.8e6,margin:20.64},'002':{total:885.5e6,sin:814.2e6,margin:19.01},'003':{total:425.3e6,sin:364.9e6,margin:19.39},'004':{total:259.5e6,sin:221.7e6,margin:20.66},'005':{total:843.1e6,sin:731.0e6,margin:20.35},'006':{total:532.5e6,sin:531.8e6,margin:19.05},'007':{total:652.4e6,sin:590.2e6,margin:19.04},'008':{total:386.4e6,sin:334.9e6,margin:19.38}},
+    compras:{'001':1272.7e6,'002':752.0e6,'003':335.3e6,'004':227.8e6,'005':722.9e6,'006':468.8e6,'007':521.5e6,'008':282.1e6},
+    nomina:{'001':{dev:101.4e6,emp:46},'002':{dev:41.1e6,emp:17},'003':{dev:24.3e6,emp:10},'004':{dev:17.4e6,emp:7},'005':{dev:44.0e6,emp:17},'006':{dev:22.6e6,emp:10},'007':{dev:26.6e6,emp:11},'008':{dev:26.5e6,emp:11}},
+    inv:{'001':{val:1630.6e6,units:350653,skus:8217},'002':{val:1276.1e6,units:436315,skus:5966},'003':{val:504.7e6,units:142415,skus:4657},'004':{val:402.2e6,units:121943,skus:4107},'005':{val:870.6e6,units:226276,skus:5276},'006':{val:663.5e6,units:187237,skus:4999},'007':{val:735.7e6,units:197726,skus:5293},'008':{val:674.7e6,units:185616,skus:5592}}
+  },
+  Julio:{
+    ventas:{'001':{total:1545.9e6,sin:1358.3e6,margin:20.5},'002':{total:902.6e6,sin:833.2e6,margin:18.42},'003':{total:460.6e6,sin:392.9e6,margin:18.88},'004':{total:264.6e6,sin:223.5e6,margin:19.53},'005':{total:880.9e6,sin:769.3e6,margin:19.92},'006':{total:547.5e6,sin:546.0e6,margin:18.23},'007':{total:678.4e6,sin:616.9e6,margin:18.76},'008':{total:418.9e6,sin:369.8e6,margin:19.07}},
+    compras:{'001':1235.0e6,'002':811.8e6,'003':345.6e6,'004':201.4e6,'005':760.1e6,'006':455.9e6,'007':561.6e6,'008':349.6e6},
+    nomina:{'001':{dev:110.7e6,emp:47},'002':{dev:46.0e6,emp:18},'003':{dev:27.3e6,emp:10},'004':{dev:18.1e6,emp:7},'005':{dev:48.1e6,emp:20},'006':{dev:23.5e6,emp:10},'007':{dev:27.1e6,emp:11},'008':{dev:28.2e6,emp:11}},
+    inv:{'001':{val:1682.3e6,units:379687,skus:8410},'002':{val:971.2e6,units:244837,skus:6004},'003':{val:512.3e6,units:142059,skus:4678},'004':{val:409.4e6,units:122330,skus:4101},'005':{val:933.9e6,units:237364,skus:5331},'006':{val:674.9e6,units:191626,skus:5069},'007':{val:751.6e6,units:195163,skus:5417},'008':{val:607.7e6,units:148225,skus:5595}}
+  },
+  Agosto:{
+    ventas:{'001':{total:1523.4e6,sin:1333.9e6,margin:20.62},'002':{total:977.0e6,sin:897.6e6,margin:18.11},'003':{total:475.5e6,sin:404.6e6,margin:18.54},'004':{total:268.7e6,sin:222.9e6,margin:18.98},'005':{total:921.4e6,sin:813.8e6,margin:19.79},'006':{total:608.4e6,sin:607.1e6,margin:17.57},'007':{total:723.3e6,sin:658.4e6,margin:18.75},'008':{total:406.8e6,sin:355.2e6,margin:18.59}},
+    compras:{'001':1247.8e6,'002':723.5e6,'003':345.0e6,'004':126.5e6,'005':631.4e6,'006':465.5e6,'007':575.8e6,'008':282.2e6},
+    nomina:{'001':{dev:113.8e6,emp:47},'002':{dev:48.8e6,emp:18},'003':{dev:25.4e6,emp:10},'004':{dev:23.5e6,emp:7},'005':{dev:45.9e6,emp:18},'006':{dev:26.4e6,emp:10},'007':{dev:27.9e6,emp:11},'008':{dev:29.2e6,emp:11}},
+    inv:{'001':{val:1870.8e6,units:436507,skus:8536},'002':{val:946.0e6,units:228870,skus:6046},'003':{val:511.8e6,units:134772,skus:4752},'004':{val:347.0e6,units:96818,skus:4061},'005':{val:890.7e6,units:223893,skus:5327},'006':{val:620.3e6,units:172329,skus:5017},'007':{val:727.6e6,units:187963,skus:5533},'008':{val:594.2e6,units:146456,skus:5647}}
+  },
+  Septiembre:{
+    ventas:{'001':{total:1466.8e6,sin:1290.9e6,margin:20.36},'002':{total:873.1e6,sin:801.6e6,margin:18.25},'003':{total:430.6e6,sin:366.2e6,margin:18.35},'004':{total:239.7e6,sin:197.9e6,margin:19.63},'005':{total:835.6e6,sin:734.3e6,margin:19.61},'006':{total:604.3e6,sin:603.2e6,margin:17.44},'007':{total:651.7e6,sin:594.1e6,margin:18.35},'008':{total:400.5e6,sin:353.6e6,margin:18.24}},
+    compras:{'001':1163.2e6,'002':708.7e6,'003':316.2e6,'004':155.4e6,'005':700.6e6,'006':489.2e6,'007':501.4e6,'008':383.8e6},
+    nomina:{'001':{dev:106.4e6,emp:46},'002':{dev:44.4e6,emp:18},'003':{dev:24.2e6,emp:10},'004':{dev:15.2e6,emp:6},'005':{dev:45.2e6,emp:18},'006':{dev:21.5e6,emp:9},'007':{dev:26.4e6,emp:11},'008':{dev:26.7e6,emp:11}},
+    inv:{'001':{val:1768.0e6,units:356053,skus:8652},'002':{val:974.2e6,units:230647,skus:6169},'003':{val:519.4e6,units:135823,skus:4828},'004':{val:363.7e6,units:148852,skus:4129},'005':{val:951.7e6,units:226864,skus:5519},'006':{val:608.6e6,units:169059,skus:5022},'007':{val:740.6e6,units:193671,skus:5536},'008':{val:646.5e6,units:156377,skus:5784}}
+  }
+};
+
+// ── STATE ────────────────────────────────────────────────────────
+let mode='con'; // 'con'=total, 'sin'=sin carnicería
+let curV='Septiembre',curC='Septiembre',curN='Septiembre',curI='Septiembre',curPdv='Septiembre',curA='Septiembre';
+const charts={};
+
+// ── HELPERS ──────────────────────────────────────────────────────
+const vField = () => mode==='con'?'total':'sin';
+const vGet = (mes,co) => DATA[mes].ventas[co]?.[vField()]||0;
+const totV  = mes => PDV_ORDER.reduce((s,co)=>s+vGet(mes,co),0);
+const totC  = mes => PDV_ORDER.reduce((s,co)=>s+(DATA[mes].compras[co]||0),0);
+const totN  = mes => PDV_ORDER.reduce((s,co)=>s+(DATA[mes].nomina[co]?.dev||0),0);
+const totI  = mes => PDV_ORDER.reduce((s,co)=>s+(DATA[mes].inv[co]?.val||0),0);
+const wMg   = mes => {let sv=0,sm=0;PDV_ORDER.forEach(co=>{const d=DATA[mes].ventas[co];if(d){sv+=vGet(mes,co);sm+=vGet(mes,co)*(d.margin||0);}});return sv>0?sm/sv:0;};
+const fmt   = v => v>=1e9?`$${(v/1e9).toFixed(2)}B`:v>=1e6?`$${(v/1e6).toFixed(1)}M`:`$${Math.round(v).toLocaleString('es-CO')}`;
+const pct   = (a,b) => b>0?((a-b)/b*100):0;
+const tChip = v => Math.abs(v)<0.5?`<span class="flat">—</span>`:v>0?`<span class="up">▲${v.toFixed(1)}%</span>`:`<span class="dn">▼${Math.abs(v).toFixed(1)}%</span>`;
+const dc    = id => {if(charts[id]){charts[id].destroy();delete charts[id];}};
+
+// ── TOGGLE MODE ───────────────────────────────────────────────────
+function setMode(m){
+  mode=m;
+  document.getElementById('tog-con').classList.toggle('active',m==='con');
+  document.getElementById('tog-sin').classList.toggle('active',m==='sin');
+  // Re-render active section
+  const active=document.querySelector('.section.active')?.id.replace('sec-','');
+  if(active) rerender(active);
+}
+function rerender(id){
+  const fn={resumen:renderResumen,ventas:()=>renderVentas(curV),compras:()=>renderCompras(curC),
+    nomina:()=>renderNomina(curN),inventario:()=>renderInv(curI),comparar:renderComparar,
+    pdv:()=>renderPdv(curPdv),alertas:()=>renderAlertas(curA)};
+  fn[id]&&fn[id]();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+function nav(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  btn.classList.add('active');
+  rerender(id);
+}
+
+// ── BUILD TABS ────────────────────────────────────────────────────
+function buildTabs(containerId,activeMes,fn){
+  document.getElementById(containerId).innerHTML=MESES.map(m=>
+    `<button class="mes-tab${m===activeMes?' active':''}" onclick="${fn}('${m}')">${m}</button>`
+  ).join('');
+}
+function activateTab(containerId,mes){
+  document.querySelectorAll(`#${containerId} .mes-tab`).forEach(t=>t.classList.toggle('active',t.textContent===mes));
+}
+
+// ── RESUMEN ───────────────────────────────────────────────────────
+function renderResumen(){
+  const m='Septiembre',mp='Agosto';
+  const tv=totV(m),tc=totC(m),tn=totN(m),tvp=totV(mp),mg=wMg(m);
+  document.getElementById('r-kpis').innerHTML=`
+    <div class="kpi blue"><div class="kpi-label">Ventas Sep.</div><div class="kpi-val">${fmt(tv)}</div><div class="kpi-sub">${tChip(pct(tv,tvp))} vs Agosto</div></div>
+    <div class="kpi"><div class="kpi-label">Compras Sep.</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">Ratio ${(tc/tv*100).toFixed(1)}%</div></div>
+    <div class="kpi ${tn/tv*100<8?'good':tn/tv*100<12?'warn':'bad'}"><div class="kpi-label">Nómina Sep.</div><div class="kpi-val">${fmt(tn)}</div><div class="kpi-sub">${(tn/tv*100).toFixed(1)}% ventas</div></div>
+    <div class="kpi purple"><div class="kpi-label">Margen Prom.</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>`;
+
+  // Consolidado
+  const rows=MESES.map(mes=>{
+    const tv=totV(mes),tc=totC(mes),tn=totN(mes),ti=totI(mes),mg=wMg(mes);
+    const pn=tn/tv*100;
+    return`<tr><td><strong>${mes}</strong></td><td class="r">${fmt(tv)}</td><td class="r">${fmt(tc)}</td>
+      <td class="r">${fmt(tn)}</td><td class="r"><span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">${pn.toFixed(1)}%</span></td>
+      <td class="r">${fmt(ti)}</td><td class="r">${mg.toFixed(1)}%</td></tr>`;
+  }).join('');
+  const sv=MESES.reduce((s,m)=>s+totV(m),0),sc=MESES.reduce((s,m)=>s+totC(m),0),sn=MESES.reduce((s,m)=>s+totN(m),0);
+  document.getElementById('t-resumen').innerHTML=rows+`<tr class="tot"><td>TOTAL</td><td class="r">${fmt(sv)}</td><td class="r">${fmt(sc)}</td><td class="r">${fmt(sn)}</td><td class="r">${(sn/sv*100).toFixed(1)}%</td><td class="r">—</td><td class="r">—</td></tr>`;
+
+  dc('ch-resumen-bar');
+  charts['ch-resumen-bar']=new Chart(document.getElementById('ch-resumen-bar'),{
+    type:'bar',data:{labels:MESES,datasets:[
+      {label:'Ventas',data:MESES.map(m=>+(totV(m)/1e9).toFixed(3)),backgroundColor:'rgba(91,110,245,.75)',borderRadius:5},
+      {label:'Compras',data:MESES.map(m=>+(totC(m)/1e9).toFixed(3)),backgroundColor:'rgba(167,139,250,.5)',borderRadius:5}
+    ]},options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:10}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v.toFixed(1)}B`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+  dc('ch-resumen-pie');
+  charts['ch-resumen-pie']=new Chart(document.getElementById('ch-resumen-pie'),{
+    type:'doughnut',data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),datasets:[{
+      data:PDV_ORDER.map(co=>+(vGet('Septiembre',co)/1e6).toFixed(1)),
+      backgroundColor:PDV_COLORS,borderWidth:0,hoverOffset:6}]},
+    options:{cutout:'60%',plugins:{legend:{position:'right',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}},
+      tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.raw*1e6)}`}}}}
+  });
+}
+
+// ── VENTAS ────────────────────────────────────────────────────────
+function renderVentas(mes){
+  curV=mes; activateTab('v-tabs',mes);
+  document.getElementById('v-badge').textContent=mes+(mode==='sin'?' · Sin Cárn.':"");
+  const tv=totV(mes),pvMes=MESES[MESES.indexOf(mes)-1],tvp=pvMes?totV(pvMes):0,mg=wMg(mes);
+  const best=PDV_ORDER.reduce((a,b)=>vGet(mes,a)>vGet(mes,b)?a:b);
+  document.getElementById('v-kpis').innerHTML=`
+    <div class="kpi blue"><div class="kpi-label">Ventas Totales</div><div class="kpi-val">${fmt(tv)}</div><div class="kpi-sub">${pvMes?tChip(pct(tv,tvp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi"><div class="kpi-label">Margen Promedio</div><div class="kpi-val">${mg.toFixed(1)}%</div><div class="kpi-sub">${mode==='sin'?'Sin carnicería':'Con carnicería'}</div></div>
+    <div class="kpi"><div class="kpi-label">Líder</div><div class="kpi-val sm">${PDV_NAMES[best]}</div><div class="kpi-sub">${fmt(vGet(mes,best))}</div></div>`;
+  document.getElementById('t-ventas').innerHTML=PDV_ORDER.map((co,i)=>{
+    const v=vGet(mes,co),vp=pvMes?vGet(pvMes,co):0,pctT=tv>0?v/tv*100:0;
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      <td class="r">${fmt(v)}</td>
+      <td class="r"><span class="pill ${DATA[mes].ventas[co]?.margin>20?'pg':DATA[mes].ventas[co]?.margin>18?'pb':'py'}">${(DATA[mes].ventas[co]?.margin||0).toFixed(1)}%</span></td>
+      <td class="r">${vp>0?tChip(pct(v,vp)):'—'}</td>
+      <td><div style="display:flex;align-items:center;gap:5px">
+        <div class="bar-bg" style="width:70px"><div class="bar-fill" style="width:${Math.min(pctT*5,100)}%;background:${PDV_COLORS[i]}"></div></div>
+        <span style="font-size:11px;color:var(--fg3)">${pctT.toFixed(1)}%</span></div></td></tr>`;
+  }).join('');
+  dc('ch-ventas-line');
+  charts['ch-ventas-line']=new Chart(document.getElementById('ch-ventas-line'),{
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
+      label:PDV_NAMES[co],data:MESES.map(m=>+(vGet(m,co)/1e6).toFixed(1)),
+      borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+}
+
+// ── COMPRAS ───────────────────────────────────────────────────────
+function renderCompras(mes){
+  curC=mes; activateTab('c-tabs',mes);
+  document.getElementById('c-badge').textContent=mes;
+  const tc=totC(mes),tv=totV(mes),pvMes=MESES[MESES.indexOf(mes)-1],tcp=pvMes?totC(pvMes):0;
+  document.getElementById('c-kpis').innerHTML=`
+    <div class="kpi purple"><div class="kpi-label">Compras Totales</div><div class="kpi-val">${fmt(tc)}</div><div class="kpi-sub">${pvMes?tChip(pct(tc,tcp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi"><div class="kpi-label">Ratio C/V</div><div class="kpi-val">${(tc/tv*100).toFixed(1)}%</div><div class="kpi-sub">Ideal ≤80%</div></div>
+    <div class="kpi"><div class="kpi-label">Mayor Comprador</div><div class="kpi-val sm">${PDV_NAMES[PDV_ORDER.reduce((a,b)=>(DATA[mes].compras[a]||0)>(DATA[mes].compras[b]||0)?a:b)]}</div><div class="kpi-sub">${fmt(Math.max(...PDV_ORDER.map(co=>DATA[mes].compras[co]||0)))}</div></div>`;
+  document.getElementById('t-compras').innerHTML=PDV_ORDER.map((co,i)=>{
+    const c=DATA[mes].compras[co]||0,v=vGet(mes,co),r=v>0?c/v*100:0;
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      <td class="r">${fmt(c)}</td><td class="r">${fmt(v)}</td>
+      <td class="r"><span class="pill ${r<75?'pg':r<90?'py':'pr'}">${r.toFixed(1)}%</span></td>
+      <td>${r<75?'✅ Eficiente':r<90?'⚠️ Normal':'🔴 Alto'}</td></tr>`;
+  }).join('');
+  dc('ch-compras');
+  charts['ch-compras']=new Chart(document.getElementById('ch-compras'),{
+    type:'bar',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
+      label:PDV_NAMES[co],data:MESES.map(m=>+((DATA[m].compras[co]||0)/1e6).toFixed(1)),
+      backgroundColor:PDV_COLORS[i]+'bb',borderRadius:4}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:10}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+}
+
+// ── NÓMINA ────────────────────────────────────────────────────────
+function renderNomina(mes){
+  curN=mes; activateTab('n-tabs',mes);
+  document.getElementById('n-badge').textContent=mes;
+  const tn=totN(mes),tv=totV(mes),pn=tn/tv*100,pvMes=MESES[MESES.indexOf(mes)-1],tnp=pvMes?totN(pvMes):0;
+  const tot_emp=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].nomina[co]?.emp||0),0);
+  document.getElementById('n-kpis').innerHTML=`
+    <div class="kpi ${pn<8?'good':pn<12?'warn':'bad'}"><div class="kpi-label">Nómina Total</div><div class="kpi-val">${fmt(tn)}</div><div class="kpi-sub">${pvMes?tChip(pct(tn,tnp))+' vs '+pvMes:'—'}</div></div>
+    <div class="kpi ${pn<8?'good':pn<12?'warn':'bad'}"><div class="kpi-label">% Nóm / Ventas</div><div class="kpi-val">${pn.toFixed(1)}%</div><div class="kpi-sub">${pn<8?'🟢 Óptimo':pn<12?'🟡 Atención':'🔴 Crítico'}</div></div>
+    <div class="kpi"><div class="kpi-label">Empleados</div><div class="kpi-val">${tot_emp}</div><div class="kpi-sub">Toda la red</div></div>`;
+  document.getElementById('t-nomina').innerHTML=PDV_ORDER.map((co,i)=>{
+    const n=DATA[mes].nomina[co];if(!n)return'';
+    const v=vGet(mes,co),pn=v>0?n.dev/v*100:0,vpe=n.emp>0?v/n.emp:0;
+    const cl=pn<8?'g':pn<12?'y':'r';
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      <td class="r">${fmt(n.dev)}</td><td class="r">${fmt(v)}</td>
+      <td class="r"><div style="display:flex;justify-content:flex-end"><div class="circ ${cl}">${pn.toFixed(1)}%</div></div></td>
+      <td class="r">${n.emp}</td><td class="r">${fmt(vpe)}</td>
+      <td><span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">${pn<8?'Verde':pn<12?'Amarillo':'Rojo'}</span></td></tr>`;
+  }).join('');
+  dc('ch-nomina');
+  charts['ch-nomina']=new Chart(document.getElementById('ch-nomina'),{
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>{
+      const n=DATA[MESES[0]].nomina[co];if(!n)return null;
+      return{label:PDV_NAMES[co],data:MESES.map(m=>{const n=DATA[m].nomina[co],v=vGet(m,co);return v>0?+((n?.dev||0)/v*100).toFixed(2):0;}),
+        borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3};
+    }).filter(Boolean)},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},
+        y:{ticks:{color:'#8b93b8',callback:v=>`${v}%`},grid:{color:'rgba(255,255,255,.05)'},
+          min:0,max:15}}}
+  });
+}
+
+// ── INVENTARIO ────────────────────────────────────────────────────
+function renderInv(mes){
+  curI=mes; activateTab('i-tabs',mes);
+  document.getElementById('i-badge').textContent=mes;
+  const ti=totI(mes),tv=totV(mes),mg=wMg(mes),cogs=tv*(1-mg/100),dias=cogs>0?Math.round(ti/cogs*30):0;
+  const skus=PDV_ORDER.reduce((s,co)=>s+(DATA[mes].inv[co]?.skus||0),0);
+  document.getElementById('i-kpis').innerHTML=`
+    <div class="kpi purple"><div class="kpi-label">Valorización</div><div class="kpi-val">${fmt(ti)}</div><div class="kpi-sub">Total en bodega</div></div>
+    <div class="kpi ${dias<45?'good':dias<65?'warn':'bad'}"><div class="kpi-label">Días Inv. Prom.</div><div class="kpi-val">${dias}</div><div class="kpi-sub">${dias<45?'Ágil':dias<65?'Normal':'Exceso'}</div></div>
+    <div class="kpi blue"><div class="kpi-label">SKUs</div><div class="kpi-val">${skus.toLocaleString('es-CO')}</div><div class="kpi-sub">Productos activos</div></div>
+    <div class="kpi"><div class="kpi-label">Inv / Ventas</div><div class="kpi-val">${(ti/tv*100).toFixed(1)}%</div><div class="kpi-sub">Ratio cobertura</div></div>`;
+  document.getElementById('t-inv').innerHTML=PDV_ORDER.map((co,i)=>{
+    const inv=DATA[mes].inv[co];if(!inv)return'';
+    const v=vGet(mes,co),mg=DATA[mes].ventas[co]?.margin||0,cogs=v*(1-mg/100);
+    const dias=cogs>0?Math.round(inv.val/cogs*30):0,rot=dias>0?+(365/dias).toFixed(1):0;
+    const pctP=ti>0?inv.val/ti*100:0;
+    return`<tr><td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      <td class="r">${fmt(inv.val)}</td>
+      <td class="r"><div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
+        <div class="bar-bg" style="width:44px"><div class="bar-fill" style="width:${Math.min(pctP*5,100)}%;background:${PDV_COLORS[i]}"></div></div>${pctP.toFixed(1)}%</div></td>
+      <td class="r"><span class="pill ${dias<45?'pg':dias<65?'py':'pr'}">${dias}d</span></td>
+      <td class="r">${rot}x</td><td class="r">${inv.skus.toLocaleString('es-CO')}</td>
+      <td>${dias<45?'✅ Ágil':dias<65?'⚠️ Normal':'🔴 Exceso'}</td></tr>`;
+  }).join('');
+  dc('ch-inv');
+  charts['ch-inv']=new Chart(document.getElementById('ch-inv'),{
+    type:'line',data:{labels:MESES,datasets:PDV_ORDER.map((co,i)=>({
+      label:PDV_NAMES[co],data:MESES.map(m=>+((DATA[m].inv[co]?.val||0)/1e6).toFixed(1)),
+      borderColor:PDV_COLORS[i],backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:.3}))},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b93b8',font:{size:11},boxWidth:8,padding:8}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+}
+
+// ── COMPARAR ──────────────────────────────────────────────────────
+function renderComparar(){
+  const ma=document.getElementById('cmp-a').value;
+  const mb=document.getElementById('cmp-b').value;
+  const tva=totV(ma),tvb=totV(mb),tca=totC(ma),tcb=totC(mb),tna=totN(ma),tnb=totN(mb),tia=totI(ma),tib=totI(mb);
+  const mga=wMg(ma),mgb=wMg(mb);
+  const colA='#5b6ef5',colB='#f87171';
+  // KPI comparison cards
+  const kpiCard=(label,va,vb,fmt2)=>{
+    const d=pct(vb,va);
+    return`<div class="card" style="padding:14px 16px">
+      <div class="kpi-label" style="margin-bottom:8px">${label}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">
+        <div><div style="font-size:11px;color:${colA};font-weight:700">${ma}</div><div style="font-size:18px;font-weight:800">${fmt2(va)}</div></div>
+        <div style="text-align:center">${tChip(d)}</div>
+        <div style="text-align:right"><div style="font-size:11px;color:${colB};font-weight:700">${mb}</div><div style="font-size:18px;font-weight:800">${fmt2(vb)}</div></div>
+      </div></div>`;
+  };
+  document.getElementById('cmp-kpis').innerHTML=
+    kpiCard('💰 Ventas Totales',tva,tvb,fmt)+
+    kpiCard('🛒 Compras',tca,tcb,fmt)+
+    kpiCard('👥 Nómina',tna,tnb,fmt)+
+    kpiCard('📦 Inventario',tia,tib,fmt);
+
+  // Table headers
+  document.getElementById('cmp-h-a').textContent=ma;
+  document.getElementById('cmp-h-b').textContent=mb;
+
+  // Comparison table
+  document.getElementById('t-cmp').innerHTML=PDV_ORDER.map((co,i)=>{
+    const va=vGet(ma,co),vb=vGet(mb,co);
+    const na=DATA[ma].nomina[co],nb=DATA[mb].nomina[co];
+    const pna=va>0?(na?.dev||0)/va*100:0,pnb=vb>0?(nb?.dev||0)/vb*100:0;
+    const ia=DATA[ma].inv[co]?.val||0,ib=DATA[mb].inv[co]?.val||0;
+    return`<tr>
+      <td><span class="dot" style="background:${PDV_COLORS[i]}"></span><strong>${PDV_NAMES[co]}</strong></td>
+      <td class="r">${fmt(va)}</td><td class="r">${fmt(vb)}</td>
+      <td class="r">${tChip(pct(vb,va))}</td>
+      <td class="r">${tChip(pnb-pna)}</td>
+      <td class="r">${tChip(pct(ib,ia))}</td></tr>`;
+  }).join('');
+
+  // Grouped bar chart
+  dc('ch-cmp-bar');
+  charts['ch-cmp-bar']=new Chart(document.getElementById('ch-cmp-bar'),{
+    type:'bar',
+    data:{labels:PDV_ORDER.map(co=>PDV_NAMES[co]),datasets:[
+      {label:ma,data:PDV_ORDER.map(co=>+(vGet(ma,co)/1e6).toFixed(1)),backgroundColor:colA+'bb',borderRadius:5},
+      {label:mb,data:PDV_ORDER.map(co=>+(vGet(mb,co)/1e6).toFixed(1)),backgroundColor:colB+'bb',borderRadius:5}
+    ]},
+    options:{plugins:{legend:{position:'top',labels:{color:'#8b93b8',font:{size:12},boxWidth:12}}},
+      scales:{x:{ticks:{color:'#8b93b8'},grid:{display:false}},
+        y:{ticks:{color:'#8b93b8',callback:v=>`$${v}M`},grid:{color:'rgba(255,255,255,.05)'}}}}
+  });
+}
+
+// ── PDV SCORECARD ─────────────────────────────────────────────────
+function renderPdv(mes){
+  curPdv=mes||curPdv; activateTab('pdv-tabs',curPdv);
+  document.getElementById('pdv-sub').textContent=`${curPdv} 2026 · Vista consolidada`;
+  document.getElementById('pdv-grid').innerHTML=PDV_ORDER.map((co,i)=>{
+    const v=vGet(curPdv,co),c=DATA[curPdv].compras[co]||0,n=DATA[curPdv].nomina[co],inv=DATA[curPdv].inv[co];
+    const mg=DATA[curPdv].ventas[co]?.margin||0,pn=n&&v>0?n.dev/v*100:0;
+    const cogs=v*(1-mg/100),dias=inv&&cogs>0?Math.round(inv.val/cogs*30):0;
+    return`<div class="card" style="border-top:3px solid ${PDV_COLORS[i]}">
+      <div class="card-title" style="font-size:15px;font-weight:800">${PDV_NAMES[co]} <span style="color:var(--fg3);font-size:11px;font-weight:400">PDV ${co}</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div><div class="kpi-label">Ventas</div><div style="font-size:17px;font-weight:800;color:${PDV_COLORS[i]}">${fmt(v)}</div></div>
+        <div><div class="kpi-label">Margen</div><div style="font-size:17px;font-weight:800">${mg.toFixed(1)}%</div></div>
+        <div><div class="kpi-label">Compras</div><div style="font-size:15px;font-weight:700">${fmt(c)}</div></div>
+        <div><div class="kpi-label">Ratio C/V</div><div style="font-size:15px;font-weight:700">${v>0?(c/v*100).toFixed(1):0}%</div></div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span class="pill ${pn<8?'pg':pn<12?'py':'pr'}">👥 Nóm ${pn.toFixed(1)}%</span>
+        <span class="pill ${dias<45?'pg':dias<65?'py':'pr'}">📦 ${dias}d</span>
+        <span class="pill pb">📊 ${(inv?.skus||0).toLocaleString()} SKUs</span>
+        ${n?`<span class="pill pp">👤 ${n.emp} empl.</span>`:''}
+      </div></div>`;
+  }).join('');
+}
+
+// ── ALERTAS ───────────────────────────────────────────────────────
+function renderAlertas(mes){
+  curA=mes||curA; activateTab('a-tabs',curA);
+  const alertas=[];
+  PDV_ORDER.forEach((co,i)=>{
+    const v=vGet(curA,co),mg=DATA[curA].ventas[co]?.margin||0,n=DATA[curA].nomina[co];
+    const inv=DATA[curA].inv[co],c=DATA[curA].compras[co]||0,pn=n&&v>0?n.dev/v*100:0;
+    const cogs=v*(1-mg/100),dias=inv&&cogs>0?Math.round(inv.val/cogs*30):0;
+    const pvMes=MESES[MESES.indexOf(curA)-1],vp=pvMes?vGet(pvMes,co):0;
+    const color=PDV_COLORS[i],name=PDV_NAMES[co];
+    if(pn>12) alertas.push({sev:'r',name,color,t:`Nómina crítica: ${pn.toFixed(1)}%`,d:`Supera el 12%. Revisar headcount o incrementar ventas en ${name}.`});
+    else if(pn>8) alertas.push({sev:'y',name,color,t:`Nómina en alerta: ${pn.toFixed(1)}%`,d:`Zona amarilla (8–12%). Monitorear tendencia.`});
+    if(dias>65) alertas.push({sev:'r',name,color,t:`Exceso inventario: ${dias} días`,d:`Capital inmovilizado ${fmt(inv?.val||0)}. Reducir compras.`});
+    if(mg<18.5) alertas.push({sev:'y',name,color,t:`Margen bajo: ${mg.toFixed(1)}%`,d:`Por debajo de 18.5%. Revisar precios y mezcla.`});
+    if(vp>0&&pct(v,vp)<-5) alertas.push({sev:'r',name,color,t:`Caída ventas: ${pct(v,vp).toFixed(1)}% vs ${pvMes}`,d:`Descenso significativo en ${name}.`});
+    if(c>v*0.95) alertas.push({sev:'y',name,color,t:`Compras excesivas: ${(c/v*100).toFixed(1)}% C/V`,d:`Las compras superan el 95% de las ventas en ${name}.`});
+  });
+  if(!alertas.length){
+    document.getElementById('alertas-body').innerHTML=`<div class="card" style="text-align:center;padding:40px"><div style="font-size:36px">✅</div><div style="font-size:16px;font-weight:700;margin-top:12px">Sin alertas críticas</div><div style="color:var(--fg2);margin-top:6px">Todos los indicadores dentro del rango normal · ${curA}</div></div>`;
+    return;
+  }
+  const reds=alertas.filter(a=>a.sev==='r'),yellows=alertas.filter(a=>a.sev==='y');
+  document.getElementById('alertas-body').innerHTML=[
+    {title:`🔴 Críticas (${reds.length})`,items:reds,border:'#f87171'},
+    {title:`🟡 Atención (${yellows.length})`,items:yellows,border:'#fbbf24'}
+  ].filter(s=>s.items.length>0).map(s=>`
+    <div class="card" style="border-left:3px solid ${s.border};margin-bottom:14px">
+      <div class="card-title">${s.title}</div>
+      ${s.items.map(a=>`<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">
+        <div style="width:8px;border-radius:4px;background:${a.color};flex-shrink:0;margin-top:2px"></div>
+        <div><div style="font-weight:700;margin-bottom:2px">${a.name} — ${a.t}</div>
+          <div style="font-size:12px;color:var(--fg2)">${a.d}</div></div>
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+// ── SPLASH / DEVICE ───────────────────────────────────────────────
+function chooseDev(dev){
+  try{localStorage.setItem('ibanez_dev',dev);}catch(e){}
+  document.getElementById('splash').style.opacity='0';
+  document.getElementById('splash').style.transition='opacity .35s';
+  setTimeout(()=>{
+    document.getElementById('splash').style.display='none';
+    if(dev==='mobile'){
+      document.body.classList.add('mobile-mode');
+      document.getElementById('mob-nav').style.display='flex';
+    }
+    buildTabs('v-tabs','Septiembre',"renderVentas");
+    buildTabs('c-tabs','Septiembre',"renderCompras");
+    buildTabs('n-tabs','Septiembre',"renderNomina");
+    buildTabs('i-tabs','Septiembre',"renderInv");
+    buildTabs('pdv-tabs','Septiembre',"renderPdv");
+    buildTabs('a-tabs','Septiembre',"renderAlertas");
+    renderResumen();
+  },350);
+}
+
+// Auto-detect device hint
+(function(){
+  const isMob=window.innerWidth<768||/Mobi|Android/i.test(navigator.userAgent);
+  const hint=document.getElementById('splash-hint');
+  if(hint) hint.innerHTML=`Detectamos: <b onclick="chooseDev('${isMob?'mobile':'desktop'}')">${isMob?'📱 Celular — abrir en modo móvil':'💻 Computador — abrir en modo escritorio'}</b>`;
+  // Check saved preference
+  try{
+    const saved=localStorage.getItem('ibanez_dev');
+    if(saved){
+      // Show splash anyway — user might be on a different device
+      // but pre-highlight the saved option
+    }
+  }catch(e){}
+})();
+
+// nav() also updates mobile bottom nav
+const _origNav=nav;
+function nav(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item,.mobile-nav-btn').forEach(n=>n.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  // Sync both navbars
+  document.querySelectorAll(`.nav-item[onclick*="'${id}'"],.mobile-nav-btn[onclick*="'${id}'"]`).forEach(b=>b.classList.add('active'));
+  rerender(id);
+}
+</script>
+</body>
+</html>
