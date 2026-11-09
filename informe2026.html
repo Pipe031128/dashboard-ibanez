@@ -401,7 +401,7 @@ body.mobile-mode .main{padding-bottom:72px;padding-top:46px;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // ── DATA (exactos del generador) ─────────────────────────────────
-const MESES=['Abril','Mayo','Junio','Julio','Agosto','Septiembre'];
+const MESES=['Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre'];
 const PDV_NAMES={'001':'Ortiz','002':'Carepa','003':'Obrero','004':'Nueva Colonia','005':'Chigorodo','006':'Terminal','007':'Lopez','008':'Turbo'};
 const PDV_ORDER=['001','002','003','004','005','006','007','008'];
 const PDV_COLORS=['#5b6ef5','#4ade80','#f87171','#fbbf24','#a78bfa','#2dd4bf','#fb923c','#60a5fa'];
@@ -442,12 +442,18 @@ const DATA={
     compras:{'001':1163.2e6,'002':708.7e6,'003':316.2e6,'004':155.4e6,'005':700.6e6,'006':489.2e6,'007':501.4e6,'008':383.8e6},
     nomina:{'001':{dev:106.4e6,emp:46},'002':{dev:44.4e6,emp:18},'003':{dev:24.2e6,emp:10},'004':{dev:15.2e6,emp:6},'005':{dev:45.2e6,emp:18},'006':{dev:21.5e6,emp:9},'007':{dev:26.4e6,emp:11},'008':{dev:26.7e6,emp:11}},
     inv:{'001':{val:1768.0e6,units:356053,skus:8652},'002':{val:974.2e6,units:230647,skus:6169},'003':{val:519.4e6,units:135823,skus:4828},'004':{val:363.7e6,units:148852,skus:4129},'005':{val:951.7e6,units:226864,skus:5519},'006':{val:608.6e6,units:169059,skus:5022},'007':{val:740.6e6,units:193671,skus:5536},'008':{val:646.5e6,units:156377,skus:5784}}
+  },
+  Octubre:{
+    ventas:{'001':{total:1494.7e6,sin:1317.6e6,margin:20.53},'002':{total:889.9e6,sin:820.6e6,margin:18.17},'003':{total:467.9e6,sin:396.0e6,margin:18.24},'004':{total:268.0e6,sin:224.3e6,margin:19.90},'005':{total:908.7e6,sin:788.1e6,margin:19.42},'006':{total:611.8e6,sin:611.6e6,margin:17.23},'007':{total:689.9e6,sin:628.4e6,margin:18.00},'008':{total:469.3e6,sin:414.4e6,margin:18.18}},
+    compras:{'001':1087.0e6,'002':719.5e6,'003':367.0e6,'004':206.7e6,'005':710.8e6,'006':483.1e6,'007':585.7e6,'008':343.3e6},
+    nomina:{'001':{dev:110.4e6,emp:46},'002':{dev:44.4e6,emp:18},'003':{dev:25.5e6,emp:10},'004':{dev:15.5e6,emp:6},'005':{dev:42.6e6,emp:17},'006':{dev:22.7e6,emp:9},'007':{dev:26.7e6,emp:11},'008':{dev:28.6e6,emp:11}},
+    inv:{'001':{val:1630.6e6,units:350653,skus:8217},'002':{val:1276.1e6,units:436315,skus:5966},'003':{val:505.2e6,units:142431,skus:4659},'004':{val:402.2e6,units:121943,skus:4107},'005':{val:870.6e6,units:226276,skus:5276},'006':{val:663.5e6,units:187237,skus:4999},'007':{val:736.7e6,units:197758,skus:5295},'008':{val:674.7e6,units:185616,skus:5592}}
   }
 };
 
 // ── STATE ────────────────────────────────────────────────────────
 let mode='con'; // 'con'=total, 'sin'=sin carnicería
-let curV='Septiembre',curC='Septiembre',curN='Septiembre',curI='Septiembre',curPdv='Septiembre',curA='Septiembre';
+let curV='Octubre',curC='Octubre',curN='Octubre',curI='Octubre',curPdv='Octubre',curA='Octubre';
 const charts={};
 
 // ── HELPERS ──────────────────────────────────────────────────────
@@ -502,7 +508,7 @@ function activateTab(containerId,mes){
 
 // ── RESUMEN ───────────────────────────────────────────────────────
 function renderResumen(){
-  const m='Septiembre',mp='Agosto';
+  const m='Octubre',mp='Septiembre';
   const tv=totV(m),tc=totC(m),tn=totN(m),tvp=totV(mp),mg=wMg(m);
   const ti=totI(m);
   const totEmp=PDV_ORDER.reduce((s,co)=>s+(DATA[m].nomina[co]?.emp||0),0);
@@ -978,12 +984,12 @@ function chooseDev(dev){
       document.getElementById('mob-nav').style.display='flex';
       document.getElementById('mob-toggle').style.display='flex';
     }
-    buildTabs('v-tabs','Septiembre',"renderVentas");
-    buildTabs('c-tabs','Septiembre',"renderCompras");
-    buildTabs('n-tabs','Septiembre',"renderNomina");
-    buildTabs('i-tabs','Septiembre',"renderInv");
-    buildTabs('pdv-tabs','Septiembre',"renderPdv");
-    buildTabs('a-tabs','Septiembre',"renderAlertas");
+    buildTabs('v-tabs','Octubre',"renderVentas");
+    buildTabs('c-tabs','Octubre',"renderCompras");
+    buildTabs('n-tabs','Octubre',"renderNomina");
+    buildTabs('i-tabs','Octubre',"renderInv");
+    buildTabs('pdv-tabs','Octubre',"renderPdv");
+    buildTabs('a-tabs','Octubre',"renderAlertas");
     renderResumen();
   },350);
 }

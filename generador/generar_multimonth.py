@@ -18,7 +18,7 @@ INVENTARIO_DIR= BASE / 'Inventario'   / '2026'
 LINEA_DIR     = BASE / 'Linea Items'
 OUTPUT_DIR    = BASE / 'Dashboards'
 
-MESES = ['Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre']
+MESES = ['Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre']
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s  %(levelname)s  %(message)s',
